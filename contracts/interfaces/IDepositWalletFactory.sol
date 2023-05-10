@@ -3,6 +3,7 @@ pragma solidity ^0.8.10;
 
 interface IDepositWalletFactory {
     event WalletCreated(bytes32 indexed salt, address indexed wallet);
+    event BatchWalletsCreated(bytes32[] salts, address[] wallets);
 
     function treasury() external returns (address);
 
@@ -10,5 +11,9 @@ interface IDepositWalletFactory {
 
     function createWallet(bytes32 salt) external returns (address wallet);
 
+    function batchCreateWallets(bytes32[] memory salts) external returns (address[] memory wallets);
+
     function batchCollectTokens(address[] memory wallets, address[] memory tokens) external;
+
+    function batchCollectETH(address[] memory wallets) external;
 }

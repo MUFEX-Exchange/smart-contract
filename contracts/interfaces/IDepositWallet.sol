@@ -7,6 +7,8 @@ interface IDepositWallet {
 
     function treasury() external view returns (address);
 
+    function initialize(address treasury_) external;
+
     function collectETH() external;
 
     function collectTokens(address[] memory tokens) external;

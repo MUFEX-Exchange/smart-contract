@@ -17,25 +17,41 @@ contract DepositWalletFactory is IDepositWalletFactory {
             bytes1(0xff),
             address(this),
             salt,
-            keccak256(abi.encodePacked(
-                type(DepositWallet).creationCode,
-                abi.encode(treasury)
-            ))
+            keccak256(type(DepositWallet).creationCode)
         )))));
     }
 
     // salt like 0x68656c6c6f000000000000000000000000000000000000000000000000000000
     function createWallet(bytes32 salt) external override returns (address wallet) {
         require(getWallet[salt] == address(0), "used salt");
-        wallet = address(new DepositWallet{salt: salt}(treasury));
+        wallet = address(new DepositWallet{salt: salt}());
+        DepositWallet(payable(wallet)).initialize(treasury);
         getWallet[salt] = wallet;
         emit WalletCreated(salt, wallet);
+    }
+
+    function batchCreateWallets(bytes32[] memory salts) external override returns (address[] memory wallets) {
+        wallets = new address[](salts.length);
+        for (uint256 i = 0; i < salts.length; i++) {
+            require(getWallet[salts[i]] == address(0), "used salt");
+            wallets[i] = address(new DepositWallet{salt: salts[i]}());
+            DepositWallet(payable(wallets[i])).initialize(treasury);
+            getWallet[salts[i]] = wallets[i];
+        }
+        emit BatchWalletsCreated(salts, wallets);
     }
 
     function batchCollectTokens(address[] memory wallets, address[] memory tokens) external override {
         for (uint256 i = 0; i < wallets.length; i++) {
             DepositWallet wallet = DepositWallet(payable(wallets[i]));
             wallet.collectTokens(tokens);
+        }
+    }
+
+    function batchCollectETH(address[] memory wallets) external override {
+        for (uint256 i = 0; i < wallets.length; i++) {
+            DepositWallet wallet = DepositWallet(payable(wallets[i]));
+            wallet.collectETH();
         }
     }
 }
