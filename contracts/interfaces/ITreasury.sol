@@ -2,21 +2,22 @@
 pragma solidity ^0.8.10;
 
 interface ITreasury {
-    event OperatorChanged(address indexed oldOperator, address indexed newOperator);
-    event EtherWithdraw(address recipient, uint256 amount);
-    event TokenWithdrawn(address token, address recipient, uint256 amount);
+    event OperatorAdded(address indexed operator);
+    event OperatorRemoved(address indexed operator);
+    event Deposited(address indexed sender, uint256 amount);
+    event Withdrawn(address indexed operator, address recipient, uint256 amount);
 
-    function operator() external view returns (address);
+    function isOperator(address) external view returns (bool);
 
-    function changeOperator(address newOperator) external;
+    function token() external view returns (address);
 
-    function withdrawETH(address recipient, uint256 amount) external;
+    function addOperator(address operator) external;
 
-    function batchWithdrawETH(address[] memory recipients, uint256[] memory amounts) external;
+    function removeOperator(address operator) external;
 
-    function withdrawToken(address token, address recipient, uint256 amount) external;
+    function deposit(uint256 amount) external;
 
-    function withdrawTokenToRecipients(address token, address[] memory recipients, uint256[] memory amounts) external;
+    function withdraw(address recipient, uint256 amount) external;
 
-    function batchWithdrawTokensToRecipients(address[] memory tokens, address[] memory recipients, uint256[] memory amounts) external;
+    function batchWithdraw(address[] memory recipients, uint256[] memory amounts) external;
 }

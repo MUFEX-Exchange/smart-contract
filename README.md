@@ -1,6 +1,6 @@
 # 部署合约地址
 
-部署网络：Arbitrum Goerli、Polygon Mumbai、BSC Testnet、Goerli
+部署网络：Arbitrum Goerli、Polygon Mumbai、BSC Testnet、Goerli、Scroll Alpha Testnet
 
 Treasury: 0xeE9b0f1bCad2A141ca7c44dDe34C9C6bd12B3AD3
 MainTreasury: 0xc5cAB3a14f76FB1147207CE94aF333edE02DDCeB

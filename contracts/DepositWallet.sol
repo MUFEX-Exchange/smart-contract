@@ -7,15 +7,31 @@ import "./libraries/TransferHelper.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
 contract DepositWallet is IDepositWallet, Initializable {
-    address public treasury;
+    address public override factory;
+    address public override account;
+    address public override treasury;
 
     receive() external payable {
         TransferHelper.safeTransferETH(treasury, msg.value);
         emit EtherCollected(treasury, msg.value);
     }
 
-    function initialize(address treasury_) external override initializer {
+    constructor() {
+        factory = msg.sender;
+    }
+
+    function initialize(address account_, address treasury_) external override initializer {
+        require(msg.sender == factory, "forbidden");
+        require(account != address(0), "zero address");
+        account = account_;
         treasury = treasury_;
+    }
+
+    function updateAccount(address newAccount) external override {
+        require(msg.sender == account, "forbidden");
+        require(newAccount != address(0), "zero address");
+        emit AccountUpdated(account, newAccount);
+        account = newAccount;
     }
 
     function collectETH() external override {

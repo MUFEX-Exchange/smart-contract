@@ -22,23 +22,24 @@ contract DepositWalletFactory is IDepositWalletFactory {
     }
 
     // salt like 0x68656c6c6f000000000000000000000000000000000000000000000000000000
-    function createWallet(bytes32 salt) external override returns (address wallet) {
+    function createWallet(bytes32 salt, address account) external override returns (address wallet) {
         require(getWallet[salt] == address(0), "used salt");
         wallet = address(new DepositWallet{salt: salt}());
-        DepositWallet(payable(wallet)).initialize(treasury);
+        DepositWallet(payable(wallet)).initialize(account, treasury);
         getWallet[salt] = wallet;
-        emit WalletCreated(salt, wallet);
+        emit WalletCreated(salt, account, wallet);
     }
 
-    function batchCreateWallets(bytes32[] memory salts) external override returns (address[] memory wallets) {
+    function batchCreateWallets(bytes32[] memory salts, address[] memory accounts) external override returns (address[] memory wallets) {
+        require(salts.length == accounts.length, "length not the same");
         wallets = new address[](salts.length);
         for (uint256 i = 0; i < salts.length; i++) {
             require(getWallet[salts[i]] == address(0), "used salt");
             wallets[i] = address(new DepositWallet{salt: salts[i]}());
-            DepositWallet(payable(wallets[i])).initialize(treasury);
+            DepositWallet(payable(wallets[i])).initialize(accounts[i], treasury);
             getWallet[salts[i]] = wallets[i];
         }
-        emit BatchWalletsCreated(salts, wallets);
+        emit BatchWalletsCreated(salts, accounts, wallets);
     }
 
     function batchCollectTokens(address[] memory wallets, address[] memory tokens) external override {

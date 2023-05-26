@@ -9,6 +9,7 @@ const GOERLI_URL = process.env.GOERLI_URL;
 const ARBITRUM_GOERLI_URL = process.env.ARBITRUM_GOERLI_URL;
 const BSC_TESTNET_URL = process.env.BSC_TESTNET_URL;
 const POLYGON_MUMBAI_URL = process.env.POLYGON_MUMBAI_URL;
+const SCROLL_TESTNET_URL = process.env.SCROLL_TESTNET_URL;
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
 const ARBISCAN_API_KEY = process.env.ARBISCAN_API_KEY;
 
@@ -41,6 +42,10 @@ const config: HardhatUserConfig = {
     },
     polygonMumbai: {
       url: POLYGON_MUMBAI_URL,
+      accounts: [`${PRIVATE_KEY}`],
+    },
+    scrollTestnet: {
+      url: SCROLL_TESTNET_URL,
       accounts: [`${PRIVATE_KEY}`],
     },
   },
