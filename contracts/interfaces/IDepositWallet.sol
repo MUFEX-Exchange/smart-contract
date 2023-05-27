@@ -2,8 +2,8 @@
 pragma solidity ^0.8.10;
 
 interface IDepositWallet {
-    event EtherCollected(address indexed treasury, uint256 amount);
-    event TokenCollected(address indexed treasury, address indexed token, uint256 amount);
+    event EtherCollected(address indexed treasury, uint256 amount, string requestId);
+    event TokenCollected(address indexed treasury, address indexed token, uint256 amount, string requestId);
     event AccountUpdated(address indexed oldAccount, address indexed newAccount);
 
     function factory() external view returns (address);
@@ -16,7 +16,7 @@ interface IDepositWallet {
 
     function updateAccount(address newAccount) external;
 
-    function collectETH() external;
+    function collectETH(string memory requestId) external;
 
-    function collectTokens(address[] memory tokens) external;
+    function collectTokens(address[] memory tokens, string[] memory requestIds) external;
 }

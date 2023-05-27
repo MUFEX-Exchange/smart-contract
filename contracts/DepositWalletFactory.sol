@@ -42,17 +42,18 @@ contract DepositWalletFactory is IDepositWalletFactory {
         emit BatchWalletsCreated(salts, accounts, wallets);
     }
 
-    function batchCollectTokens(address[] memory wallets, address[] memory tokens) external override {
+    function batchCollectTokens(address[] memory wallets, address[] memory tokens, string[] memory requestIds) external override {
         for (uint256 i = 0; i < wallets.length; i++) {
             DepositWallet wallet = DepositWallet(payable(wallets[i]));
-            wallet.collectTokens(tokens);
+            wallet.collectTokens(tokens, requestIds);
         }
     }
 
-    function batchCollectETH(address[] memory wallets) external override {
+    function batchCollectETH(address[] memory wallets, string[] memory requestIds) external override {
+        require(wallets.length == requestIds.length, "length not the same");
         for (uint256 i = 0; i < wallets.length; i++) {
             DepositWallet wallet = DepositWallet(payable(wallets[i]));
-            wallet.collectETH();
+            wallet.collectETH(requestIds[i]);
         }
     }
 }

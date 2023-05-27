@@ -33,25 +33,26 @@ abstract contract BaseTreasury is ITreasury, Ownable {
         emit Deposited(msg.sender, amount);
     }
 
-    function withdraw(address recipient, uint256 amount) external override onlyOperator {
-        _withdraw(recipient, amount);
+    function withdraw(address recipient, uint256 amount, string memory requestId) external override onlyOperator {
+        _withdraw(recipient, amount, requestId);
     }
 
     function batchWithdraw(
         address[] memory recipients,
-        uint256[] memory amounts
+        uint256[] memory amounts,
+        string[] memory requestIds
     ) external override onlyOperator {
-        require(recipients.length == amounts.length, "length not the same");
+        require(recipients.length == amounts.length && recipients.length == requestIds.length, "length not the same");
         for (uint256 i = 0; i < recipients.length; i++) {
-            _withdraw(recipients[i], amounts[i]);
+            _withdraw(recipients[i], amounts[i], requestIds[i]);
         }
     }
 
-    function _withdraw(address recipient, uint256 amount) internal {
+    function _withdraw(address recipient, uint256 amount, string memory requestId) internal {
         require(recipient != address(0), "recipient is zero address");
         require(amount > 0, "zero amount");
         require(IERC20(token).balanceOf(address(this)) >= amount, "balance not enough");
         TransferHelper.safeTransfer(token, recipient, amount);
-        emit Withdrawn(msg.sender, recipient, amount);
+        emit Withdrawn(msg.sender, recipient, amount, requestId);
     }
 }

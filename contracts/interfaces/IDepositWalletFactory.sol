@@ -13,7 +13,7 @@ interface IDepositWalletFactory {
 
     function batchCreateWallets(bytes32[] memory salts, address[] memory accounts) external returns (address[] memory wallets);
 
-    function batchCollectTokens(address[] memory wallets, address[] memory tokens) external;
+    function batchCollectTokens(address[] memory wallets, address[] memory tokens, string[] memory requestIds) external;
 
-    function batchCollectETH(address[] memory wallets) external;
+    function batchCollectETH(address[] memory wallets, string[] memory requestIds) external;
 }
