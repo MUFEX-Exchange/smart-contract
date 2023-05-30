@@ -1,154 +1,19 @@
 
-// SPDX-License-Identifier: AML
-// 
-// Copyright 2017 Christian Reitwiessner
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to
-// deal in the Software without restriction, including without limitation the
-// rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-// sell copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-// IN THE SOFTWARE.
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.10;
 
-// 2019 OKIMS
+import "./interfaces/IMainTreasury.sol";
+import "./libraries/Pairing.sol";
+import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
-pragma solidity ^0.8.0;
-
-library Pairing {
-
-    uint256 constant PRIME_Q = 21888242871839275222246405745257275088696311157297823662689037894645226208583;
-
-    struct G1Point {
-        uint256 X;
-        uint256 Y;
-    }
-
-    // Encoding of field elements is: X[0] * z + X[1]
-    struct G2Point {
-        uint256[2] X;
-        uint256[2] Y;
-    }
-
-    /*
-     * @return The negation of p, i.e. p.plus(p.negate()) should be zero. 
-     */
-    function negate(G1Point memory p) internal pure returns (G1Point memory) {
-
-        // The prime q in the base field F_q for G1
-        if (p.X == 0 && p.Y == 0) {
-            return G1Point(0, 0);
-        } else {
-            return G1Point(p.X, PRIME_Q - (p.Y % PRIME_Q));
-        }
-    }
-
-    /*
-     * @return The sum of two points of G1
-     */
-    function plus(
-        G1Point memory p1,
-        G1Point memory p2
-    ) internal view returns (G1Point memory r) {
-
-        uint256[4] memory input;
-        input[0] = p1.X;
-        input[1] = p1.Y;
-        input[2] = p2.X;
-        input[3] = p2.Y;
-        bool success;
-
-        // solium-disable-next-line security/no-inline-assembly
-        assembly {
-            success := staticcall(sub(gas(), 2000), 6, input, 0xc0, r, 0x60)
-            // Use "invalid" to make gas estimation work
-            switch success case 0 { invalid() }
-        }
-
-        require(success,"pairing-add-failed");
-    }
-
-    /*
-     * @return The product of a point on G1 and a scalar, i.e.
-     *         p == p.scalar_mul(1) and p.plus(p) == p.scalar_mul(2) for all
-     *         points p.
-     */
-    function scalar_mul(G1Point memory p, uint256 s) internal view returns (G1Point memory r) {
-
-        uint256[3] memory input;
-        input[0] = p.X;
-        input[1] = p.Y;
-        input[2] = s;
-        bool success;
-        // solium-disable-next-line security/no-inline-assembly
-        assembly {
-            success := staticcall(sub(gas(), 2000), 7, input, 0x80, r, 0x60)
-            // Use "invalid" to make gas estimation work
-            switch success case 0 { invalid() }
-        }
-        require (success,"pairing-mul-failed");
-    }
-
-    /* @return The result of computing the pairing check
-     *         e(p1[0], p2[0]) *  .... * e(p1[n], p2[n]) == 1
-     *         For example,
-     *         pairing([P1(), P1().negate()], [P2(), P2()]) should return true.
-     */
-    function pairing(
-        G1Point memory a1,
-        G2Point memory a2,
-        G1Point memory b1,
-        G2Point memory b2,
-        G1Point memory c1,
-        G2Point memory c2,
-        G1Point memory d1,
-        G2Point memory d2
-    ) internal view returns (bool) {
-
-        G1Point[4] memory p1 = [a1, b1, c1, d1];
-        G2Point[4] memory p2 = [a2, b2, c2, d2];
-        uint256 inputSize = 24;
-        uint256[] memory input = new uint256[](inputSize);
-
-        for (uint256 i = 0; i < 4; i++) {
-            uint256 j = i * 6;
-            input[j + 0] = p1[i].X;
-            input[j + 1] = p1[i].Y;
-            input[j + 2] = p2[i].X[0];
-            input[j + 3] = p2[i].X[1];
-            input[j + 4] = p2[i].Y[0];
-            input[j + 5] = p2[i].Y[1];
-        }
-
-        uint256[1] memory out;
-        bool success;
-
-        // solium-disable-next-line security/no-inline-assembly
-        assembly {
-            success := staticcall(sub(gas(), 2000), 8, add(input, 0x20), mul(inputSize, 0x20), out, 0x20)
-            // Use "invalid" to make gas estimation work
-            switch success case 0 { invalid() }
-        }
-
-        require(success,"pairing-opcode-failed");
-
-        return out[0] != 0;
-    }
-}
-
-contract Verifier {
+contract Verifier is Initializable {
 
     using Pairing for *;
 
     uint256 constant SNARK_SCALAR_FIELD = 21888242871839275222246405745257275088548364400416034343698204186575808495617;
     uint256 constant PRIME_Q = 21888242871839275222246405745257275088696311157297823662689037894645226208583;
+
+    address public mainTreasury;
 
     struct VerifyingKey {
         Pairing.G1Point alfa1;
@@ -164,6 +29,13 @@ contract Verifier {
         Pairing.G1Point C;
     }
 
+    function initialize(address mainTreasury_) external initializer {
+        mainTreasury = mainTreasury_;
+    }
+
+    /*
+     * 电路修改后，vk需要同步更新（@kg需要改成可更新的）
+     */
     function verifyingKey() internal pure returns (VerifyingKey memory vk) {
         vk.alfa1 = Pairing.G1Point(uint256(5405201782098463060161137549655070471981737101111284299770432932868146686249), uint256(5981703316555082043701193338233703339548963638124510305244518862511571337772));
         vk.beta2 = Pairing.G2Point([uint256(19771466197315070773439446976073379003904842313011769668524550257273504697198), uint256(6673448270177140253544369469582247615353980242675976829425282403112596564529)], [uint256(10045469853770426668693425387553546132727425490278638514344172051195044651652), uint256(7171443872375773199195938653017137711884025769637746927801436782689507288954)]);
@@ -181,7 +53,7 @@ contract Verifier {
         uint256[2] memory a,
         uint256[2][2] memory b,
         uint256[2] memory c,
-        uint256[1] memory input
+        uint256[4] memory input
     ) public view returns (bool r) {
 
         Proof memory proof;
@@ -225,5 +97,53 @@ contract Verifier {
             proof.C,
             vk.delta2
         );
+    }
+
+    function submit(
+        uint64 zkpId,
+        uint256[] memory BeforeAccountTreeRoot,
+        uint256[] memory AfterAccountTreeRoot,
+        uint256[] memory BeforeCEXAssetsCommitment,
+        uint256[] memory AfterCEXAssetsCommitment,
+        uint256[2][] memory a, // zk proof参数
+        uint256[2][2][] memory b, // zk proof参数
+        uint256[2][] memory c, // zk proof参数
+        uint256 withdrawMerkelTreeToot,
+        uint256 totalBalance,
+        uint256 totalWithdraw
+    ) public returns (bool r) {
+        // 确保输入数组的长度匹配
+        require(BeforeAccountTreeRoot.length == AfterAccountTreeRoot.length,"BeforeAccountTreeRoot.length != AfterAccountTreeRoot.length");
+        require(BeforeAccountTreeRoot.length == BeforeCEXAssetsCommitment.length,"BeforeAccountTreeRoot.length != BeforeCEXAssetsCommitment.length");
+        require(BeforeAccountTreeRoot.length == AfterCEXAssetsCommitment.length,"BeforeAccountTreeRoot.length != AfterCEXAssetsCommitment.length");
+        require(BeforeAccountTreeRoot.length == a.length,"BeforeAccountTreeRoot.length != a.length");
+        require(BeforeAccountTreeRoot.length == b.length,"BeforeAccountTreeRoot.length != b.length");
+        require(BeforeAccountTreeRoot.length == c.length,"BeforeAccountTreeRoot.length != c.length");
+
+        // 确保前一个数据的after值为后一个数据的before值
+        for (uint256 i = 1; i < BeforeAccountTreeRoot.length; i++) {
+            require(BeforeAccountTreeRoot[i] == AfterAccountTreeRoot[i-1],"BeforeAccountTreeRoot[i] != AfterAccountTreeRoot[i-1]");
+            require(BeforeCEXAssetsCommitment[i] == AfterCEXAssetsCommitment[i-1],"BeforeCEXAssetsCommitment[i] != AfterCEXAssetsCommitment[i-1]");
+        }
+
+        // 确保zk proof是准确的
+        for (uint256 i = 0; i < BeforeAccountTreeRoot.length; i++) {
+            uint256[4] memory input = [
+                    BeforeAccountTreeRoot[i],
+                    AfterAccountTreeRoot[i],
+                    BeforeCEXAssetsCommitment[i],
+                    AfterCEXAssetsCommitment[i]
+                ];
+            bool rst = verifyProof(
+                a[i],
+                b[i],
+                c[i],
+                input
+            );
+            require(rst,"zk proof fail");
+        }
+
+        IMainTreasury(mainTreasury).updateZKP(zkpId, AfterAccountTreeRoot[AfterAccountTreeRoot.length - 1], withdrawMerkelTreeToot, totalBalance, totalWithdraw);
+        return true;
     }
 }

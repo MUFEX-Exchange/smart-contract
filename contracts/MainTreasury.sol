@@ -5,15 +5,15 @@ import "./BaseTreasury.sol";
 import "./interfaces/IMainTreasury.sol";
 import "./libraries/TransferHelper.sol";
 import "./libraries/MerkleProof.sol";
+import "./libraries/MiMC.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
 contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
     address public override verifier;
 
-    bytes32 public override zkpId;
-    bytes32 public override balanceRoot;
-    bytes32 public override withdrawRoot;
-
+    uint64 public override zkpId;
+    uint256 public override balanceRoot;
+    uint256 public override withdrawRoot;
     uint256 public override totalBalance;
     uint256 public override totalWithdraw;
     uint256 public override withdrawn;
@@ -29,23 +29,32 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
     uint256[] private allGeneralWithdrawnIndex;
     uint256[] private allForceWithdrawnIndex;
 
+    modifier onlyVerifierSet {
+        require(verifier != address(0), "verifier not set");
+        _;
+    }
+
     function initialize(
         address token_,
-        address verifier_,
         uint256 forceTimeWindow_
     ) external initializer {
         token = token_;
-        verifier = verifier_;
         forceTimeWindow = forceTimeWindow_;
     }
 
+    function setVerifier(address verifier_) external override onlyOwner {
+        require(verifier == address(0), "verifier already set");
+        verifier = verifier_;
+        emit VerifierSet(verifier);
+    }
+
     function updateZKP(
-        bytes32 newZkpId,
-        bytes32 newBalanceRoot,
-        bytes32 newWithdrawRoot,
+        uint64 newZkpId,
+        uint256 newBalanceRoot,
+        uint256 newWithdrawRoot,
         uint256 newTotalBalance,
         uint256 newTotalWithdraw
-    ) external override {
+    ) external override onlyVerifierSet {
         require(msg.sender == verifier, "forbidden");
         require(!forceWithdrawOpened, "force withdraw opened");
         require(withdrawFinished, "last withdraw not finish yet");
@@ -72,7 +81,7 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
     }
 
     function generalWithdraw(
-        bytes32[] calldata proof,
+        uint256[] calldata proof,
         uint256 index,
         uint256 withdrawId,
         uint256 accountId,
@@ -80,10 +89,20 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
         address to,
         uint8 withdrawType,
         uint256 amount
-    ) external override {
+    ) external override onlyVerifierSet {
         require(!isWithdrawn(index, true), "Drop already withdrawn");
         // Verify the merkle proof.
-        bytes32 node = keccak256(abi.encodePacked(zkpId, index, withdrawId, accountId, account, to, withdrawType, amount));
+        uint256[] memory msgs = new uint256[](8);
+        msgs[0] = zkpId;
+        msgs[1] = index;
+        msgs[2] = withdrawId;
+        msgs[3] = accountId;
+        msgs[4] = uint256(uint160(account));
+        msgs[5] = uint256(uint160(to));
+        msgs[6] = withdrawType;
+        msgs[7] = amount;
+        uint256 node = MiMC.Hash(msgs);
+        // bytes32 node = keccak256(abi.encodePacked(zkpId, index, withdrawId, accountId, account, to, withdrawType, amount));
         require(MerkleProof.verify(proof, withdrawRoot, node), "Invalid proof");
         // Mark it withdrawn and send the token.
         _setWithdrawn(index, true);
@@ -97,15 +116,22 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
     }
 
     function forceWithdraw(
-        bytes32[] calldata proof,
+        uint256[] calldata proof,
         uint256 index,
         uint256 accountId,
         uint256 amount
-    ) external override {
+    ) external override onlyVerifierSet {
         require(block.timestamp > lastUpdateTime + forceTimeWindow, "not over forceTimeWindow");
         require(!isWithdrawn(index, false), "Drop already withdrawn");
         // Verify the merkle proof.
-        bytes32 node = keccak256(abi.encodePacked(zkpId, index, accountId, msg.sender, amount));
+        uint256[] memory msgs = new uint256[](5);
+        msgs[0] = zkpId;
+        msgs[1] = index;
+        msgs[2] = accountId;
+        msgs[3] = uint256(uint160(msg.sender));
+        msgs[4] = amount;
+        uint256 node = MiMC.Hash(msgs);
+        // bytes32 node = keccak256(abi.encodePacked(zkpId, index, accountId, msg.sender, amount));
         require(MerkleProof.verify(proof, balanceRoot, node), "Invalid proof");
         // Mark it withdrawn and send the token.
         _setWithdrawn(index, false);
