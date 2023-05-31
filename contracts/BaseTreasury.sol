@@ -4,7 +4,7 @@ pragma solidity ^0.8.10;
 import "./interfaces/IERC20.sol";
 import "./interfaces/ITreasury.sol";
 import "./libraries/TransferHelper.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "./Ownable.sol";
 
 abstract contract BaseTreasury is ITreasury, Ownable {
     address public token;

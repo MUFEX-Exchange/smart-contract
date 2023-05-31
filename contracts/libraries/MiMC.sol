@@ -8,17 +8,12 @@ pragma solidity ^0.8.10;
 *
 * Round constants are generated in sequence from a seed
 */
-library MiMC
-{
-    function GetScalarField ()
-        internal pure returns (uint256)
-    {
+library MiMC {
+    function GetScalarField () internal pure returns (uint256) {
         return 0x30644e72e131a029b85045b68181585d2833e84879b9709143e1f593f0000001;
     }
 
-    function Encipher( uint256 in_x, uint256 in_k )
-        public pure returns(uint256 out_x)
-    {
+    function Encipher( uint256 in_x, uint256 in_k ) internal pure returns(uint256 out_x) {
         return MiMCpe7( in_x, in_k, uint256(keccak256("mimc")), 91 );
     }
 
@@ -27,9 +22,7 @@ library MiMC
     * 
     * Recommended at least 46 rounds, for a polynomial degree of 2^126
     */
-    function MiMCpe7( uint256 in_x, uint256 in_k, uint256 in_seed, uint256 round_count )
-        internal pure returns(uint256 out_x)
-    {
+    function MiMCpe7( uint256 in_x, uint256 in_k, uint256 in_seed, uint256 round_count ) internal pure returns(uint256 out_x) {
         assembly {
             if lt(round_count, 1) { revert(0, 0) }
 
@@ -58,9 +51,7 @@ library MiMC
         }
     }
        
-    function MiMCpe7_mp( uint256[] memory in_x, uint256 in_k, uint256 in_seed, uint256 round_count )
-        internal pure returns (uint256)
-    {
+    function MiMCpe7_mp( uint256[] memory in_x, uint256 in_k, uint256 in_seed, uint256 round_count ) internal pure returns (uint256) {
         uint256 r = in_k;
         uint256 localQ = 0x30644e72e131a029b85045b68181585d2833e84879b9709143e1f593f0000001;
 
@@ -72,15 +63,11 @@ library MiMC
         return r;
     }
 
-    function Hash( uint256[] memory in_msgs, uint256 in_key )
-        public pure returns (uint256)
-    {
+    function Hash( uint256[] memory in_msgs, uint256 in_key ) internal pure returns (uint256) {
         return MiMCpe7_mp( in_msgs, in_key, uint256(keccak256("seed")), 91 );
     }
 
-    function Hash( uint256[] memory in_msgs )
-        public pure returns (uint256)
-    {
+    function Hash( uint256[] memory in_msgs ) internal pure returns (uint256) {
         return Hash( in_msgs, 0 );
     }
 }

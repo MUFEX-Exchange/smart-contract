@@ -38,6 +38,7 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
         address token_,
         uint256 forceTimeWindow_
     ) external initializer {
+        owner = msg.sender;
         token = token_;
         forceTimeWindow = forceTimeWindow_;
     }
