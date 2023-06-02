@@ -5,32 +5,32 @@ import "./ITreasury.sol";
 
 interface IMainTreasury is ITreasury {
     event VerifierSet(address verifier);
-    event ZKPUpdated(uint64 zkpId, uint256 balanceRoot, uint256 withdrawRoot, uint256 totalBalance, uint256 totalWithdraw);
-    event GeneralWithdrawn(address indexed account, address indexed to, uint64 zkpId, uint256 index, uint256 amount);
-    event ForceWithdrawn(address indexed account, uint64 zkpId, uint256 index, uint256 amount);
+    event ZKPUpdated(uint64 zkpId, address[] tokens, uint256[] balanceRoots, uint256[] withdrawRoots, uint256[] totalBalances, uint256[] totalWithdraws);
+    event GeneralWithdrawn(address token, address indexed account, address indexed to, uint64 zkpId, uint256 index, uint256 amount);
+    event ForceWithdrawn(address token, address indexed account, uint64 zkpId, uint256 index, uint256 amount);
 
+    function ETH() external view returns (address);
     function verifier() external view returns (address);
     function zkpId() external view returns (uint64);
-    // total balance merkle tree root, use for forceWithdraw
-    function balanceRoot() external view returns (uint256);
-    // total withdraw merkle tree root, use for generalWithdraw
-    function withdrawRoot() external view returns (uint256);
-    function totalBalance() external view returns (uint256);
-    function totalWithdraw() external view returns (uint256);
-    function withdrawn() external view returns (uint256);
+    function getBalanceRoot(address token) external view returns (uint256);
+    function getWithdrawRoot(address token) external view returns (uint256);
+    function getTotalBalance(address token) external view returns (uint256);
+    function getTotalWithdraw(address token) external view returns (uint256);
+    function getWithdrawn(address token) external view returns (uint256);
+    function getWithdrawFinished(address token) external view returns (bool);
     function lastUpdateTime() external view returns (uint256);
     function forceTimeWindow() external view returns (uint256);
-    function withdrawFinished() external view returns (bool);
     function forceWithdrawOpened() external view returns (bool);
 
     function setVerifier(address verifier_) external;
 
     function updateZKP(
         uint64 newZkpId,
-        uint256 newBalanceRoot, 
-        uint256 newWithdrawRoot, 
-        uint256 newTotalBalance, 
-        uint256 newTotalWithdraw
+        address[] calldata tokens,
+        uint256[] calldata newBalanceRoots,
+        uint256[] calldata newWithdrawRoots,
+        uint256[] calldata newTotalBalances,
+        uint256[] calldata newTotalWithdraws
     ) external;
 
     function generalWithdraw(
@@ -38,6 +38,7 @@ interface IMainTreasury is ITreasury {
         uint256 index,
         uint256 withdrawId,
         uint256 accountId,
+        address token,
         address account,
         address to,
         uint8 withdrawType,
@@ -48,6 +49,7 @@ interface IMainTreasury is ITreasury {
         uint256[] calldata proof,
         uint256 index,
         uint256 accountId,
-        uint256 equity
+        uint256 amount,
+        address token
     ) external;
 }

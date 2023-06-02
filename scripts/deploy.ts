@@ -8,21 +8,21 @@ async function main() {
 
   const HotTreasury = await ethers.getContractFactory("HotTreasury");
   const hotTreasury = await HotTreasury.deploy();
-  await hotTreasury.initialize(USDT);
+  await hotTreasury.initialize();
   await hotTreasury.addOperator(operator);
   console.log("HotTreasury", hotTreasury.address);
   console.log(verifyStr, process.env.HARDHAT_NETWORK, hotTreasury.address);
 
   const MainTreasury = await ethers.getContractFactory("MainTreasury");
   const mainTreasury = await MainTreasury.deploy();
-  await mainTreasury.initialize(USDT, 604800);
+  await mainTreasury.initialize(604800);
   await mainTreasury.addOperator(operator);
   console.log("MainTreasury", mainTreasury.address);
   console.log(verifyStr, process.env.HARDHAT_NETWORK, mainTreasury.address);
 
   const Verifier = await ethers.getContractFactory("Verifier");
   const verifier = await Verifier.deploy();
-  await verifier.initialize(mainTreasury.address);
+  await verifier.initialize(mainTreasury.address, USDT);
   console.log("Verifier", verifier.address);
   console.log(verifyStr, process.env.HARDHAT_NETWORK, verifier.address);
 

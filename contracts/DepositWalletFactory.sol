@@ -47,6 +47,7 @@ contract DepositWalletFactory is IDepositWalletFactory {
             DepositWallet wallet = DepositWallet(payable(wallets[i]));
             wallet.collectTokens(tokens, requestIds);
         }
+        emit BatchCollectTokens(wallets, tokens, requestIds);
     }
 
     function batchCollectETH(address[] memory wallets, string[] memory requestIds) external override {
@@ -55,5 +56,6 @@ contract DepositWalletFactory is IDepositWalletFactory {
             DepositWallet wallet = DepositWallet(payable(wallets[i]));
             wallet.collectETH(requestIds[i]);
         }
+        emit BatchCollectETH(wallets, requestIds);
     }
 }

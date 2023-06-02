@@ -4,20 +4,26 @@ pragma solidity ^0.8.10;
 interface ITreasury {
     event OperatorAdded(address indexed operator);
     event OperatorRemoved(address indexed operator);
-    event Deposited(address indexed sender, uint256 amount);
-    event Withdrawn(address indexed operator, address recipient, uint256 amount, string requestId);
+    event EthDeposited(address indexed sender, uint256 amount);
+    event TokenDeposited(address indexed token, address indexed sender, uint256 amount);
+    event EthWithdrawn(address indexed operator, address indexed recipient, uint256 amount, string requestId);
+    event TokenWithdrawn(address indexed token, address indexed operator, address indexed recipient, uint256 amount, string requestId);
 
     function isOperator(address) external view returns (bool);
-
-    function token() external view returns (address);
 
     function addOperator(address operator) external;
 
     function removeOperator(address operator) external;
 
-    function deposit(uint256 amount) external;
+    function depositETH() external payable;
 
-    function withdraw(address recipient, uint256 amount, string memory requestId) external;
+    function depositToken(address token, uint256 amount) external;
 
-    function batchWithdraw(address[] memory recipients, uint256[] memory amounts, string[] memory requestIds) external;
+    function withdrawETH(address recipient, uint256 amount, string memory requestId) external;
+
+    function withdrawToken(address token, address recipient, uint256 amount, string memory requestId) external;
+
+    function batchWithdrawETH(address[] memory recipients, uint256[] memory amounts, string[] memory requestIds) external;
+
+    function batchWithdrawToken(address[] memory tokens, address[] memory recipients, uint256[] memory amounts, string[] memory requestIds) external;
 }

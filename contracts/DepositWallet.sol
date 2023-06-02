@@ -22,7 +22,7 @@ contract DepositWallet is IDepositWallet, Initializable {
 
     function initialize(address account_, address treasury_) external override initializer {
         require(msg.sender == factory, "forbidden");
-        require(account != address(0), "zero address");
+        require(account_ != address(0), "zero address");
         account = account_;
         treasury = treasury_;
     }

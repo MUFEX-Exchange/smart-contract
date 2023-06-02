@@ -7,13 +7,14 @@ import "./libraries/TransferHelper.sol";
 import "./Ownable.sol";
 
 abstract contract BaseTreasury is ITreasury, Ownable {
-    address public token;
     mapping(address => bool) public isOperator;
 
     modifier onlyOperator() {
         require(isOperator[msg.sender], "only operator");
         _;
     }
+
+    receive() external payable {}
 
     function addOperator(address operator) external override onlyOwner {
         require(!isOperator[operator], "already added");
@@ -27,32 +28,67 @@ abstract contract BaseTreasury is ITreasury, Ownable {
         emit OperatorRemoved(operator);
     }
 
-    function deposit(uint256 amount) external override {
+    function depositETH() external payable override {
+        require(msg.value > 0, "deposit amount is zero");
+        emit EthDeposited(msg.sender, msg.value);
+    }
+
+    function depositToken(address token, uint256 amount) external override {
+        require(token != address(0), "zero address");
         require(amount > 0, "deposit amount is zero");
         TransferHelper.safeTransferFrom(token, msg.sender, address(this), amount);
-        emit Deposited(msg.sender, amount);
+        emit TokenDeposited(token, msg.sender, amount);
     }
 
-    function withdraw(address recipient, uint256 amount, string memory requestId) external override onlyOperator {
-        _withdraw(recipient, amount, requestId);
+    function withdrawETH(address recipient, uint256 amount, string memory requestId) external override onlyOperator {
+        _withdrawETH(recipient, amount, requestId);
     }
 
-    function batchWithdraw(
+    function withdrawToken(address token, address recipient, uint256 amount, string memory requestId) external override onlyOperator {
+        _withdrawToken(token, recipient, amount, requestId);
+    }
+
+    function batchWithdrawETH(
+        address[] memory recipients, 
+        uint256[] memory amounts, 
+        string[] memory requestIds
+    ) external override onlyOperator {
+        require(
+            recipients.length == amounts.length && 
+            recipients.length == requestIds.length, "length not the same");
+        for (uint256 i = 0; i < recipients.length; i++) {
+            _withdrawETH(recipients[i], amounts[i], requestIds[i]);
+        }
+    }
+
+    function batchWithdrawToken(
+        address[] memory tokens,
         address[] memory recipients,
         uint256[] memory amounts,
         string[] memory requestIds
     ) external override onlyOperator {
-        require(recipients.length == amounts.length && recipients.length == requestIds.length, "length not the same");
+        require(
+            tokens.length == recipients.length &&
+            recipients.length == amounts.length && 
+            recipients.length == requestIds.length, "length not the same");
         for (uint256 i = 0; i < recipients.length; i++) {
-            _withdraw(recipients[i], amounts[i], requestIds[i]);
+            _withdrawToken(tokens[i], recipients[i], amounts[i], requestIds[i]);
         }
     }
 
-    function _withdraw(address recipient, uint256 amount, string memory requestId) internal {
+    function _withdrawETH(address recipient, uint256 amount, string memory requestId) internal {
+        require(recipient != address(0), "recipient is zero address");
+        require(amount > 0, "zero amount");
+        TransferHelper.safeTransferETH(recipient, amount);
+        emit EthWithdrawn(msg.sender, recipient, amount, requestId);
+    }
+
+    function _withdrawToken(address token, address recipient, uint256 amount, string memory requestId) internal {
+        require(token != address(0), "token is zero address");
         require(recipient != address(0), "recipient is zero address");
         require(amount > 0, "zero amount");
         require(IERC20(token).balanceOf(address(this)) >= amount, "balance not enough");
         TransferHelper.safeTransfer(token, recipient, amount);
-        emit Withdrawn(msg.sender, recipient, amount, requestId);
+        emit TokenWithdrawn(token, msg.sender, recipient, amount, requestId);
     }
 }

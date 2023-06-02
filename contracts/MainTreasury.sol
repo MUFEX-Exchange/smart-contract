@@ -9,37 +9,40 @@ import "./libraries/MiMC.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
 contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
+    address public constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
+
     address public override verifier;
 
     uint64 public override zkpId;
-    uint256 public override balanceRoot;
-    uint256 public override withdrawRoot;
-    uint256 public override totalBalance;
-    uint256 public override totalWithdraw;
-    uint256 public override withdrawn;
+
+    mapping(address => uint256) public override getBalanceRoot;
+    mapping(address => uint256) public override getWithdrawRoot;
+    mapping(address => uint256) public override getTotalBalance;
+    mapping(address => uint256) public override getTotalWithdraw;
+    mapping(address => uint256) public override getWithdrawn;
+
+    mapping(address => bool) public override getWithdrawFinished;
+    
     uint256 public override lastUpdateTime;
     uint256 public override forceTimeWindow;
 
-    bool public override withdrawFinished;
     bool public override forceWithdrawOpened;
 
-    // This is a packed array of booleans.
-    mapping(uint256 => uint256) private generalWithdrawnBitMap;
-    mapping(uint256 => uint256) private forceWithdrawnBitMap;
-    uint256[] private allGeneralWithdrawnIndex;
-    uint256[] private allForceWithdrawnIndex;
+    struct WithdrawnInfo {
+        mapping(uint256 => uint256) generalWithdrawnBitMap;
+        mapping(uint256 => uint256) forceWithdrawnBitMap;
+        uint256[] allGeneralWithdrawnIndex;
+        uint256[] allForceWithdrawnIndex;
+    }
+    mapping(address => WithdrawnInfo) private getWithdrawnInfo;
 
     modifier onlyVerifierSet {
         require(verifier != address(0), "verifier not set");
         _;
     }
 
-    function initialize(
-        address token_,
-        uint256 forceTimeWindow_
-    ) external initializer {
+    function initialize(uint256 forceTimeWindow_) external initializer {
         owner = msg.sender;
-        token = token_;
         forceTimeWindow = forceTimeWindow_;
     }
 
@@ -51,34 +54,50 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
 
     function updateZKP(
         uint64 newZkpId,
-        uint256 newBalanceRoot,
-        uint256 newWithdrawRoot,
-        uint256 newTotalBalance,
-        uint256 newTotalWithdraw
+        address[] calldata tokens,
+        uint256[] calldata newBalanceRoots,
+        uint256[] calldata newWithdrawRoots,
+        uint256[] calldata newTotalBalances,
+        uint256[] calldata newTotalWithdraws
     ) external override onlyVerifierSet {
         require(msg.sender == verifier, "forbidden");
         require(!forceWithdrawOpened, "force withdraw opened");
-        require(withdrawFinished, "last withdraw not finish yet");
-        
-        uint256 balanceOfThis = IERC20(token).balanceOf(address(this));
-        require(balanceOfThis >= newTotalBalance + newTotalWithdraw, "not enough balance");
-        require(newZkpId > zkpId, "old zkp");
+        require(
+            tokens.length == newBalanceRoots.length &&
+            newBalanceRoots.length == newWithdrawRoots.length &&
+            newWithdrawRoots.length == newTotalBalances.length &&
+            newTotalBalances.length == newTotalWithdraws.length,
+            "length not the same"
+        );
 
+        uint256 balanceOfThis;
+        address token;
+        for (uint256 i = 0; i < tokens.length; i++) {
+            token = tokens[i];
+            require(getWithdrawFinished[token], "last withdraw not finish yet");
+            getWithdrawFinished[token] = false;
+
+            balanceOfThis = IERC20(token).balanceOf(address(this));
+            require(balanceOfThis >= newTotalBalances[i] + newTotalWithdraws[i], "not enough balance");
+            
+            getBalanceRoot[token] = newBalanceRoots[i];
+            getWithdrawRoot[token] = newWithdrawRoots[i];
+            getTotalBalance[token] = newTotalBalances[i];
+            getTotalWithdraw[token] = newTotalWithdraws[i];
+
+            WithdrawnInfo storage withdrawnInfo = getWithdrawnInfo[token];
+            // clear claimed records
+            for (uint256 j = 0; j < withdrawnInfo.allGeneralWithdrawnIndex.length; j++) {
+                delete withdrawnInfo.generalWithdrawnBitMap[withdrawnInfo.allGeneralWithdrawnIndex[j]];
+            }
+            delete withdrawnInfo.allGeneralWithdrawnIndex;
+        }
+
+        require(newZkpId > zkpId, "old zkp");
         zkpId = newZkpId;
-        balanceRoot = newBalanceRoot;
-        withdrawRoot = newWithdrawRoot;
-        totalBalance = newTotalBalance;
-        totalWithdraw = newTotalWithdraw;
-        withdrawFinished = false;
         lastUpdateTime = block.timestamp;
 
-        // clear claimed records
-        for (uint256 i = 0; i < allGeneralWithdrawnIndex.length; i++) {
-            delete generalWithdrawnBitMap[allGeneralWithdrawnIndex[i]];
-        }
-        delete allGeneralWithdrawnIndex;
-
-        emit ZKPUpdated(zkpId, balanceRoot, withdrawRoot, totalBalance, totalWithdraw);
+        emit ZKPUpdated(zkpId, tokens, newBalanceRoots, newWithdrawRoots, newTotalBalances, newTotalWithdraws);
     }
 
     function generalWithdraw(
@@ -86,84 +105,95 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
         uint256 index,
         uint256 withdrawId,
         uint256 accountId,
+        address token,
         address account,
         address to,
         uint8 withdrawType,
         uint256 amount
     ) external override onlyVerifierSet {
-        require(!isWithdrawn(index, true), "Drop already withdrawn");
+        require(!isWithdrawn(token, index, true), "Drop already withdrawn");
         // Verify the merkle proof.
         uint256[] memory msgs = new uint256[](8);
         msgs[0] = zkpId;
         msgs[1] = index;
         msgs[2] = withdrawId;
         msgs[3] = accountId;
-        msgs[4] = uint256(uint160(account));
-        msgs[5] = uint256(uint160(to));
-        msgs[6] = withdrawType;
-        msgs[7] = amount;
+        msgs[4] = uint256(uint160(token));
+        msgs[5] = uint256(uint160(account));
+        msgs[6] = uint256(uint160(to));
+        msgs[7] = withdrawType;
+        msgs[8] = amount;
         uint256 node = MiMC.Hash(msgs);
-        // bytes32 node = keccak256(abi.encodePacked(zkpId, index, withdrawId, accountId, account, to, withdrawType, amount));
-        require(MerkleProof.verify(proof, withdrawRoot, node), "Invalid proof");
+        require(MerkleProof.verify(proof, getWithdrawRoot[token], node), "Invalid proof");
         // Mark it withdrawn and send the token.
-        _setWithdrawn(index, true);
-        TransferHelper.safeTransfer(token, to, amount);
+        _setWithdrawn(token, index, true);
+        if (token == ETH) {
+            TransferHelper.safeTransferETH(to, amount);
+        } else {
+            TransferHelper.safeTransfer(token, to, amount);
+        }
 
-        withdrawn += amount;
-        require(withdrawn <= totalWithdraw, "over totalWithdraw");
-        if (withdrawn == totalWithdraw) withdrawFinished = true;
+        getWithdrawn[token] += amount;
+        require(getWithdrawn[token] <= getTotalWithdraw[token], "over totalWithdraw");
+        if (getWithdrawn[token] == getTotalWithdraw[token]) getWithdrawFinished[token] = true;
 
-        emit GeneralWithdrawn(account, to, zkpId, index, amount);
+        emit GeneralWithdrawn(token, account, to, zkpId, index, amount);
     }
 
     function forceWithdraw(
         uint256[] calldata proof,
         uint256 index,
         uint256 accountId,
-        uint256 amount
+        uint256 amount,
+        address token
     ) external override onlyVerifierSet {
         require(block.timestamp > lastUpdateTime + forceTimeWindow, "not over forceTimeWindow");
-        require(!isWithdrawn(index, false), "Drop already withdrawn");
+        require(!isWithdrawn(token, index, false), "Drop already withdrawn");
         // Verify the merkle proof.
         uint256[] memory msgs = new uint256[](5);
         msgs[0] = zkpId;
         msgs[1] = index;
         msgs[2] = accountId;
         msgs[3] = uint256(uint160(msg.sender));
-        msgs[4] = amount;
+        msgs[4] = uint256(uint160(token));
+        msgs[5] = amount;
         uint256 node = MiMC.Hash(msgs);
-        // bytes32 node = keccak256(abi.encodePacked(zkpId, index, accountId, msg.sender, amount));
-        require(MerkleProof.verify(proof, balanceRoot, node), "Invalid proof");
+        require(MerkleProof.verify(proof, getBalanceRoot[token], node), "Invalid proof");
         // Mark it withdrawn and send the token.
-        _setWithdrawn(index, false);
-        TransferHelper.safeTransfer(token, msg.sender, amount);
+        _setWithdrawn(token, index, false);
+        if (token == ETH) {
+            TransferHelper.safeTransferETH(msg.sender, amount);
+        } else {
+            TransferHelper.safeTransfer(token, msg.sender, amount);
+        }
 
         if (!forceWithdrawOpened) forceWithdrawOpened = true;
-        emit ForceWithdrawn(msg.sender, zkpId, index, amount); 
+        emit ForceWithdrawn(token, msg.sender, zkpId, index, amount); 
     }
 
-    function isWithdrawn(uint256 index, bool isGeneral) public view returns (bool) {
+    function isWithdrawn(address token, uint256 index, bool isGeneral) public view returns (bool) {
         uint256 wordIndex = index / 256;
         uint256 bitIndex = index % 256;
         uint256 word;
         if (isGeneral) {
-            word = generalWithdrawnBitMap[wordIndex];
+            word = getWithdrawnInfo[token].generalWithdrawnBitMap[wordIndex];
         } else {
-            word = forceWithdrawnBitMap[wordIndex];
+            word = getWithdrawnInfo[token].forceWithdrawnBitMap[wordIndex];
         }
         uint256 mask = (1 << bitIndex);
         return word & mask == mask;
     }
 
-    function _setWithdrawn(uint256 index, bool isGeneral) internal {
+    function _setWithdrawn(address token, uint256 index, bool isGeneral) internal {
         uint256 wordIndex = index / 256;
         uint256 bitIndex = index % 256;
+        WithdrawnInfo storage withdrawnInfo = getWithdrawnInfo[token];
         if (isGeneral) {
-            generalWithdrawnBitMap[wordIndex] = generalWithdrawnBitMap[wordIndex] | (1 << bitIndex);
-            allGeneralWithdrawnIndex.push(wordIndex);
+            withdrawnInfo.generalWithdrawnBitMap[wordIndex] = withdrawnInfo.generalWithdrawnBitMap[wordIndex] | (1 << bitIndex);
+            withdrawnInfo.allGeneralWithdrawnIndex.push(wordIndex);
         } else {
-            forceWithdrawnBitMap[wordIndex] = forceWithdrawnBitMap[wordIndex] | (1 << bitIndex);
-            allForceWithdrawnIndex.push(wordIndex);
+            withdrawnInfo.forceWithdrawnBitMap[wordIndex] = withdrawnInfo.forceWithdrawnBitMap[wordIndex] | (1 << bitIndex);
+            withdrawnInfo.allForceWithdrawnIndex.push(wordIndex);
         }
     }
 }

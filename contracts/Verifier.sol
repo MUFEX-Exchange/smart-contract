@@ -14,6 +14,7 @@ contract Verifier is Initializable {
     uint256 constant PRIME_Q = 21888242871839275222246405745257275088696311157297823662689037894645226208583;
 
     address public mainTreasury;
+    address public usdt;
 
     struct VerifyingKey {
         Pairing.G1Point alfa1;
@@ -29,8 +30,9 @@ contract Verifier is Initializable {
         Pairing.G1Point C;
     }
 
-    function initialize(address mainTreasury_) external initializer {
+    function initialize(address mainTreasury_, address usdt_) external initializer {
         mainTreasury = mainTreasury_;
+        usdt = usdt_;
     }
 
     /*
@@ -143,7 +145,27 @@ contract Verifier is Initializable {
             require(rst,"zk proof fail");
         }
 
-        IMainTreasury(mainTreasury).updateZKP(zkpId, AfterAccountTreeRoot[AfterAccountTreeRoot.length - 1], withdrawMerkelTreeToot, totalBalance, totalWithdraw);
+        _updateZKP(zkpId, AfterAccountTreeRoot[AfterAccountTreeRoot.length - 1], withdrawMerkelTreeToot, totalBalance, totalWithdraw);
         return true;
+    }
+
+    function _updateZKP(
+        uint64 zkpId,
+        uint256 balanceMerkelTreeToot,
+        uint256 withdrawMerkelTreeToot,
+        uint256 totalBalance,
+        uint256 totalWithdraw
+    ) internal {
+        address[] memory tokens = new address[](1);
+        tokens[0] = usdt;
+        uint256[] memory newBalanceRoots = new uint256[](1);
+        newBalanceRoots[0] = balanceMerkelTreeToot;
+        uint256[] memory newWithdrawRoots = new uint256[](1);
+        newWithdrawRoots[0] = withdrawMerkelTreeToot;
+        uint256[] memory newTotalBalances = new uint256[](1);
+        newTotalBalances[0] = totalBalance;
+        uint256[] memory newTotalWithdraws = new uint256[](1);
+        newTotalWithdraws[0] = totalWithdraw;
+        IMainTreasury(mainTreasury).updateZKP(zkpId, tokens, newBalanceRoots, newWithdrawRoots, newTotalBalances, newTotalWithdraws);
     }
 }
