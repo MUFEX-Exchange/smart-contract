@@ -43,9 +43,13 @@ contract DepositWalletFactory is IDepositWalletFactory {
     }
 
     function batchCollectTokens(address[] memory wallets, address[] memory tokens, string[] memory requestIds) external override {
+        address[] memory tokens_ = new address[](1);
+        string[] memory requestIds_ = new string[](1); 
         for (uint256 i = 0; i < wallets.length; i++) {
             DepositWallet wallet = DepositWallet(payable(wallets[i]));
-            wallet.collectTokens(tokens, requestIds);
+            tokens_[0] = tokens[i];
+            requestIds_[0] = requestIds[i];
+            wallet.collectTokens(tokens_, requestIds_);
         }
         emit BatchCollectTokens(wallets, tokens, requestIds);
     }
