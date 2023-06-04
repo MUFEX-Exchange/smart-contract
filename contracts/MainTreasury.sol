@@ -105,9 +105,9 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
         uint256 index,
         uint256 withdrawId,
         uint256 accountId,
-        address token,
         address account,
         address to,
+        address token,
         uint8 withdrawType,
         uint256 amount
     ) external override onlyVerifierSet {
@@ -118,9 +118,9 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
         msgs[1] = index;
         msgs[2] = withdrawId;
         msgs[3] = accountId;
-        msgs[4] = uint256(uint160(token));
-        msgs[5] = uint256(uint160(account));
-        msgs[6] = uint256(uint160(to));
+        msgs[4] = uint256(uint160(account));
+        msgs[5] = uint256(uint160(to));
+        msgs[6] = uint256(uint160(token));
         msgs[7] = withdrawType;
         msgs[8] = amount;
         uint256 node = MiMC.Hash(msgs);
@@ -144,31 +144,30 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
         uint256[] calldata proof,
         uint256 index,
         uint256 accountId,
-        uint256 amount,
+        uint256 equity,
         address token
     ) external override onlyVerifierSet {
         require(block.timestamp > lastUpdateTime + forceTimeWindow, "not over forceTimeWindow");
         require(!isWithdrawn(token, index, false), "Drop already withdrawn");
         // Verify the merkle proof.
         uint256[] memory msgs = new uint256[](5);
-        msgs[0] = zkpId;
-        msgs[1] = index;
-        msgs[2] = accountId;
-        msgs[3] = uint256(uint160(msg.sender));
-        msgs[4] = uint256(uint160(token));
-        msgs[5] = amount;
+        msgs[0] = index;
+        msgs[1] = accountId;
+        msgs[2] = uint256(uint160(msg.sender));
+        msgs[3] = uint256(uint160(token));
+        msgs[4] = equity;
         uint256 node = MiMC.Hash(msgs);
         require(MerkleProof.verify(proof, getBalanceRoot[token], node), "Invalid proof");
         // Mark it withdrawn and send the token.
         _setWithdrawn(token, index, false);
         if (token == ETH) {
-            TransferHelper.safeTransferETH(msg.sender, amount);
+            TransferHelper.safeTransferETH(msg.sender, equity);
         } else {
-            TransferHelper.safeTransfer(token, msg.sender, amount);
+            TransferHelper.safeTransfer(token, msg.sender, equity);
         }
 
         if (!forceWithdrawOpened) forceWithdrawOpened = true;
-        emit ForceWithdrawn(token, msg.sender, zkpId, index, amount); 
+        emit ForceWithdrawn(token, msg.sender, zkpId, index, equity); 
     }
 
     function isWithdrawn(address token, uint256 index, bool isGeneral) public view returns (bool) {

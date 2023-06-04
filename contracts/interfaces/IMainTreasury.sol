@@ -38,9 +38,9 @@ interface IMainTreasury is ITreasury {
         uint256 index,
         uint256 withdrawId,
         uint256 accountId,
-        address token,
         address account,
         address to,
+        address token,
         uint8 withdrawType,
         uint256 amount
     ) external;
@@ -49,7 +49,7 @@ interface IMainTreasury is ITreasury {
         uint256[] calldata proof,
         uint256 index,
         uint256 accountId,
-        uint256 amount,
+        uint256 equity,
         address token
     ) external;
 }
