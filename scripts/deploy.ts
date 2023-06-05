@@ -2,23 +2,23 @@ import { ethers, upgrades } from "hardhat";
 
 async function main() {
   const verifyStr = "npx hardhat verify --network";
-  // const USDT = "0x84f3eBe8048C5047b35bd2c70E1EEE4dC4b755b6"; // Arbitrum Goerli
-  const USDT = "0x665f1c610b32bb793e9ae5f09ea5dddd0e407e1a"; // Polygon Mumbai
+  const USDT = "0x84f3eBe8048C5047b35bd2c70E1EEE4dC4b755b6"; // Arbitrum Goerli
+  // const USDT = "0x665f1c610b32bb793e9ae5f09ea5dddd0e407e1a"; // Polygon Mumbai
   const operator = "0xdC8CcBD393E80b91E7bbD93dd8513c50D51933f4";
 
-  const HotTreasury = await ethers.getContractFactory("HotTreasury");
-  const hotTreasury = await HotTreasury.deploy();
+  // const HotTreasury = await ethers.getContractFactory("HotTreasury");
+  // const hotTreasury = await HotTreasury.deploy();
   // await hotTreasury.initialize();
   // await hotTreasury.addOperator(operator);
   // console.log("HotTreasury", hotTreasury.address);
   // console.log(verifyStr, process.env.HARDHAT_NETWORK, hotTreasury.address);
 
-  // const MainTreasury = await ethers.getContractFactory("MainTreasury");
-  // const mainTreasury = await MainTreasury.deploy();
+  const MainTreasury = await ethers.getContractFactory("MainTreasury");
+  const mainTreasury = await MainTreasury.deploy();
   // // await mainTreasury.initialize(604800);
   // // await mainTreasury.addOperator(operator);
   // console.log("MainTreasury", mainTreasury.address);
-  // console.log(verifyStr, process.env.HARDHAT_NETWORK, mainTreasury.address);
+  console.log(verifyStr, process.env.HARDHAT_NETWORK, mainTreasury.address);
 
   // const Verifier = await ethers.getContractFactory("Verifier");
   // const verifier = await Verifier.deploy();
