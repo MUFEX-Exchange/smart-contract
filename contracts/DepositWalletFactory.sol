@@ -9,6 +9,7 @@ contract DepositWalletFactory is IDepositWalletFactory {
     mapping(bytes32 => address) public getWallet;
 
     constructor(address treasury_) {
+        require(treasury_ != address(0), "zero address");
         treasury = treasury_;
     }
 
@@ -30,19 +31,20 @@ contract DepositWalletFactory is IDepositWalletFactory {
         emit WalletCreated(salt, account, wallet);
     }
 
-    function batchCreateWallets(bytes32[] memory salts, address[] memory accounts) external override returns (address[] memory wallets) {
+    function batchCreateWallets(bytes32[] calldata salts, address[] calldata accounts) external override returns (address[] memory wallets) {
         require(salts.length == accounts.length, "length not the same");
         wallets = new address[](salts.length);
+        address treasury_ = treasury;
         for (uint256 i = 0; i < salts.length; i++) {
             require(getWallet[salts[i]] == address(0), "used salt");
             wallets[i] = address(new DepositWallet{salt: salts[i]}());
-            DepositWallet(payable(wallets[i])).initialize(accounts[i], treasury);
+            DepositWallet(payable(wallets[i])).initialize(accounts[i], treasury_);
             getWallet[salts[i]] = wallets[i];
         }
         emit BatchWalletsCreated(salts, accounts, wallets);
     }
 
-    function batchCollectTokens(address[] memory wallets, address[] memory tokens, string[] memory requestIds) external override {
+    function batchCollectTokens(address[] calldata wallets, address[] calldata tokens, string[] calldata requestIds) external override {
         address[] memory tokens_ = new address[](1);
         string[] memory requestIds_ = new string[](1); 
         for (uint256 i = 0; i < wallets.length; i++) {
@@ -54,7 +56,7 @@ contract DepositWalletFactory is IDepositWalletFactory {
         emit BatchCollectTokens(wallets, tokens, requestIds);
     }
 
-    function batchCollectETH(address[] memory wallets, string[] memory requestIds) external override {
+    function batchCollectETH(address[] calldata wallets, string[] calldata requestIds) external override {
         require(wallets.length == requestIds.length, "length not the same");
         for (uint256 i = 0; i < wallets.length; i++) {
             DepositWallet wallet = DepositWallet(payable(wallets[i]));

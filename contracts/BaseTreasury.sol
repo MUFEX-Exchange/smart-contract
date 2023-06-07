@@ -40,18 +40,18 @@ abstract contract BaseTreasury is ITreasury, Ownable {
         emit TokenDeposited(token, msg.sender, amount);
     }
 
-    function withdrawETH(address recipient, uint256 amount, string memory requestId) external override onlyOperator {
+    function withdrawETH(address recipient, uint256 amount, string calldata requestId) external override onlyOperator {
         _withdrawETH(recipient, amount, requestId);
     }
 
-    function withdrawToken(address token, address recipient, uint256 amount, string memory requestId) external override onlyOperator {
+    function withdrawToken(address token, address recipient, uint256 amount, string calldata requestId) external override onlyOperator {
         _withdrawToken(token, recipient, amount, requestId);
     }
 
     function batchWithdrawETH(
-        address[] memory recipients, 
-        uint256[] memory amounts, 
-        string[] memory requestIds
+        address[] calldata recipients, 
+        uint256[] calldata amounts, 
+        string[] calldata requestIds
     ) external override onlyOperator {
         require(
             recipients.length == amounts.length && 
@@ -62,10 +62,10 @@ abstract contract BaseTreasury is ITreasury, Ownable {
     }
 
     function batchWithdrawToken(
-        address[] memory tokens,
-        address[] memory recipients,
-        uint256[] memory amounts,
-        string[] memory requestIds
+        address[] calldata tokens,
+        address[] calldata recipients,
+        uint256[] calldata amounts,
+        string[] calldata requestIds
     ) external override onlyOperator {
         require(
             tokens.length == recipients.length &&
@@ -76,14 +76,14 @@ abstract contract BaseTreasury is ITreasury, Ownable {
         }
     }
 
-    function _withdrawETH(address recipient, uint256 amount, string memory requestId) internal {
+    function _withdrawETH(address recipient, uint256 amount, string calldata requestId) internal {
         require(recipient != address(0), "recipient is zero address");
         require(amount > 0, "zero amount");
         TransferHelper.safeTransferETH(recipient, amount);
         emit EthWithdrawn(msg.sender, recipient, amount, requestId);
     }
 
-    function _withdrawToken(address token, address recipient, uint256 amount, string memory requestId) internal {
+    function _withdrawToken(address token, address recipient, uint256 amount, string calldata requestId) internal {
         require(token != address(0), "token is zero address");
         require(recipient != address(0), "recipient is zero address");
         require(amount > 0, "zero amount");

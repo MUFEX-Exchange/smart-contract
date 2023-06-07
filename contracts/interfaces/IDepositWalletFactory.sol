@@ -13,9 +13,9 @@ interface IDepositWalletFactory {
 
     function createWallet(bytes32 salt, address account) external returns (address wallet);
 
-    function batchCreateWallets(bytes32[] memory salts, address[] memory accounts) external returns (address[] memory wallets);
+    function batchCreateWallets(bytes32[] calldata salts, address[] calldata accounts) external returns (address[] memory wallets);
 
-    function batchCollectTokens(address[] memory wallets, address[] memory tokens, string[] memory requestIds) external;
+    function batchCollectTokens(address[] calldata wallets, address[] calldata tokens, string[] calldata requestIds) external;
 
-    function batchCollectETH(address[] memory wallets, string[] memory requestIds) external;
+    function batchCollectETH(address[] calldata wallets, string[] calldata requestIds) external;
 }

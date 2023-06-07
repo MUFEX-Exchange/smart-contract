@@ -97,7 +97,7 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
         zkpId = newZkpId;
         lastUpdateTime = block.timestamp;
 
-        emit ZKPUpdated(zkpId, tokens, newBalanceRoots, newWithdrawRoots, newTotalBalances, newTotalWithdraws);
+        emit ZKPUpdated(newZkpId, tokens, newBalanceRoots, newWithdrawRoots, newTotalBalances, newTotalWithdraws);
     }
 
     function generalWithdraw(
@@ -112,9 +112,10 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
         uint256 amount
     ) external override onlyVerifierSet {
         require(!isWithdrawn(token, index, true), "Drop already withdrawn");
+        uint64 zkpId_ = zkpId;
         // Verify the merkle proof.
         uint256[] memory msgs = new uint256[](8);
-        msgs[0] = zkpId;
+        msgs[0] = zkpId_;
         msgs[1] = index;
         msgs[2] = withdrawId;
         msgs[3] = accountId;
@@ -137,7 +138,7 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
         require(getWithdrawn[token] <= getTotalWithdraw[token], "over totalWithdraw");
         if (getWithdrawn[token] == getTotalWithdraw[token]) getWithdrawFinished[token] = true;
 
-        emit GeneralWithdrawn(token, account, to, zkpId, index, amount);
+        emit GeneralWithdrawn(token, account, to, zkpId_, index, amount);
     }
 
     function forceWithdraw(
@@ -149,6 +150,7 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
     ) external override onlyVerifierSet {
         require(block.timestamp > lastUpdateTime + forceTimeWindow, "not over forceTimeWindow");
         require(!isWithdrawn(token, index, false), "Drop already withdrawn");
+        uint64 zkpId_ = zkpId;
         // Verify the merkle proof.
         uint256[] memory msgs = new uint256[](5);
         msgs[0] = index;
@@ -167,7 +169,7 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
         }
 
         if (!forceWithdrawOpened) forceWithdrawOpened = true;
-        emit ForceWithdrawn(token, msg.sender, zkpId, index, equity); 
+        emit ForceWithdrawn(token, msg.sender, zkpId_, index, equity); 
     }
 
     function isWithdrawn(address token, uint256 index, bool isGeneral) public view returns (bool) {

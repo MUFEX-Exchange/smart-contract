@@ -13,6 +13,7 @@ contract Verifier is Initializable {
     uint256 constant SNARK_SCALAR_FIELD = 21888242871839275222246405745257275088548364400416034343698204186575808495617;
     uint256 constant PRIME_Q = 21888242871839275222246405745257275088696311157297823662689037894645226208583;
 
+    address public operator;
     address public mainTreasury;
     address public usdt;
 
@@ -30,7 +31,12 @@ contract Verifier is Initializable {
         Pairing.G1Point C;
     }
 
-    function initialize(address mainTreasury_, address usdt_) external initializer {
+    function initialize(
+        address operator_,
+        address mainTreasury_, 
+        address usdt_
+    ) external initializer {
+        operator = operator_;
         mainTreasury = mainTreasury_;
         usdt = usdt_;
     }
@@ -114,6 +120,7 @@ contract Verifier is Initializable {
         uint256 totalBalance,
         uint256 totalWithdraw
     ) public returns (bool r) {
+        require(msg.sender == operator, "only operator");
         // 确保输入数组的长度匹配
         require(BeforeAccountTreeRoot.length == AfterAccountTreeRoot.length,"BeforeAccountTreeRoot.length != AfterAccountTreeRoot.length");
         require(BeforeAccountTreeRoot.length == BeforeCEXAssetsCommitment.length,"BeforeAccountTreeRoot.length != BeforeCEXAssetsCommitment.length");

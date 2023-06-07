@@ -16,7 +16,7 @@ interface IDepositWallet {
 
     function updateAccount(address newAccount) external;
 
-    function collectETH(string memory requestId) external;
+    function collectETH(string calldata requestId) external;
 
-    function collectTokens(address[] memory tokens, string[] memory requestIds) external;
+    function collectTokens(address[] calldata tokens, string[] calldata requestIds) external;
 }

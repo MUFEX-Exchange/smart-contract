@@ -22,7 +22,7 @@ contract DepositWallet is IDepositWallet, Initializable {
 
     function initialize(address account_, address treasury_) external override initializer {
         require(msg.sender == factory, "forbidden");
-        require(account_ != address(0), "zero address");
+        require(account_ != address(0), "zero account address");
         account = account_;
         treasury = treasury_;
     }
@@ -34,13 +34,13 @@ contract DepositWallet is IDepositWallet, Initializable {
         account = newAccount;
     }
 
-    function collectETH(string memory requestId) external override {
+    function collectETH(string calldata requestId) external override {
         uint256 balance = address(this).balance;
         TransferHelper.safeTransferETH(treasury, balance);
         emit EtherCollected(treasury, balance, requestId);
     }
 
-    function collectTokens(address[] memory tokens, string[] memory requestIds) external override {
+    function collectTokens(address[] calldata tokens, string[] calldata requestIds) external override {
         require(tokens.length == requestIds.length, "length not the same");
         uint256 balance_;
         for (uint256 i = 0; i < tokens.length; i++) {

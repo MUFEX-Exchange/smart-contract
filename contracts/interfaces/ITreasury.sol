@@ -23,7 +23,7 @@ interface ITreasury {
 
     function withdrawToken(address token, address recipient, uint256 amount, string memory requestId) external;
 
-    function batchWithdrawETH(address[] memory recipients, uint256[] memory amounts, string[] memory requestIds) external;
+    function batchWithdrawETH(address[] calldata recipients, uint256[] calldata amounts, string[] calldata requestIds) external;
 
-    function batchWithdrawToken(address[] memory tokens, address[] memory recipients, uint256[] memory amounts, string[] memory requestIds) external;
+    function batchWithdrawToken(address[] calldata tokens, address[] calldata recipients, uint256[] calldata amounts, string[] calldata requestIds) external;
 }
