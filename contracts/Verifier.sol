@@ -2,11 +2,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.10;
 
+import "./Ownable.sol";
 import "./interfaces/IMainTreasury.sol";
 import "./libraries/Pairing.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
-contract Verifier is Initializable {
+contract Verifier is Ownable, Initializable {
+    event OperatorUpdated(address indexed oldOperator, address indexed newOperator);
 
     using Pairing for *;
 
@@ -36,9 +38,16 @@ contract Verifier is Initializable {
         address mainTreasury_, 
         address usdt_
     ) external initializer {
+        owner = msg.sender;
         operator = operator_;
         mainTreasury = mainTreasury_;
         usdt = usdt_;
+    }
+
+    function updateOperator(address newOperator) external onlyOwner {
+        require(newOperator != address(0), "zero address");
+        emit OperatorUpdated(operator, newOperator);
+        operator = newOperator;
     }
 
     /*

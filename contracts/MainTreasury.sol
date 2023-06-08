@@ -77,7 +77,11 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
             require(getWithdrawFinished[token], "last withdraw not finish yet");
             getWithdrawFinished[token] = false;
 
-            balanceOfThis = IERC20(token).balanceOf(address(this));
+            if (token == ETH) {
+                balanceOfThis = address(this).balance;
+            } else {
+                balanceOfThis = IERC20(token).balanceOf(address(this));
+            }
             require(balanceOfThis >= newTotalBalances[i] + newTotalWithdraws[i], "not enough balance");
             
             getBalanceRoot[token] = newBalanceRoots[i];
@@ -114,7 +118,7 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
         require(!isWithdrawn(token, index, true), "Drop already withdrawn");
         uint64 zkpId_ = zkpId;
         // Verify the merkle proof.
-        uint256[] memory msgs = new uint256[](8);
+        uint256[] memory msgs = new uint256[](9);
         msgs[0] = zkpId_;
         msgs[1] = index;
         msgs[2] = withdrawId;
