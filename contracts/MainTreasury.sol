@@ -49,7 +49,7 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
     function setVerifier(address verifier_) external override onlyOwner {
         require(verifier == address(0), "verifier already set");
         verifier = verifier_;
-        emit VerifierSet(verifier);
+        emit VerifierSet(verifier_);
     }
 
     function updateZKP(
