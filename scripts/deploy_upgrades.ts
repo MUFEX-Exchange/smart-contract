@@ -2,7 +2,8 @@ import { ethers, upgrades } from "hardhat";
 
 async function main() {
   const verifyStr = "npx hardhat verify --network";
-  const USDT = "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9"; // Arbitrum One
+  // const USDT = "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9"; // Arbitrum One
+  const USDT = "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"; // Polygon Mainnet
   // const USDT = "0xd44BB808bfE43095dBb94c83077766382D63952a"; // Goerli
   // const USDT = "0x84f3eBe8048C5047b35bd2c70E1EEE4dC4b755b6"; // Arbitrum Goerli
   // const USDT = "0x665f1c610b32bb793e9ae5f09ea5dddd0e407e1a"; // Polygon Mumbai
@@ -35,21 +36,21 @@ async function main() {
   console.log("MainTreasury Addresses:", mainTreasuryAddresses);
   await mainTreasury.addOperator(operator);
 
-  const Verifier = await ethers.getContractFactory("Verifier");
-  const verifier = await upgrades.deployProxy(Verifier, [
-    operator,
-    mainTreasury.address,
-    USDT,
-  ]);
-  await verifier.deployed();
-  const verifierAddresses = {
-    proxy: verifier.address,
-    admin: await upgrades.erc1967.getAdminAddress(verifier.address),
-    implementation: await upgrades.erc1967.getImplementationAddress(
-      verifier.address
-    ),
-  };
-  console.log("Verifier Addresses:", verifierAddresses);
+  // const Verifier = await ethers.getContractFactory("Verifier");
+  // const verifier = await upgrades.deployProxy(Verifier, [
+  //   operator,
+  //   mainTreasury.address,
+  //   USDT,
+  // ]);
+  // await verifier.deployed();
+  // const verifierAddresses = {
+  //   proxy: verifier.address,
+  //   admin: await upgrades.erc1967.getAdminAddress(verifier.address),
+  //   implementation: await upgrades.erc1967.getImplementationAddress(
+  //     verifier.address
+  //   ),
+  // };
+  // console.log("Verifier Addresses:", verifierAddresses);
 
   // await mainTreasury.setVerifier(verifier.address);
 
@@ -57,14 +58,14 @@ async function main() {
     "DepositWalletFactory"
   );
   const depositWalletFactory = await DepositWalletFactory.deploy(
-    mainTreasury.address
+    hotTreasury.address
   );
   console.log("DepositWalletFactory:", depositWalletFactory.address);
   console.log(
     verifyStr,
     process.env.HARDHAT_NETWORK,
     depositWalletFactory.address,
-    mainTreasury.address
+    hotTreasury.address
   );
 }
 

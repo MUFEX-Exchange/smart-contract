@@ -7,12 +7,15 @@ dotenv.config();
 
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 const GOERLI_URL = process.env.GOERLI_URL;
+const ARBITRUM_ONE_URL = process.env.ARBITRUM_ONE_URL;
 const ARBITRUM_GOERLI_URL = process.env.ARBITRUM_GOERLI_URL;
 const BSC_TESTNET_URL = process.env.BSC_TESTNET_URL;
+const POLYGON_MAINNET_URL = process.env.POLYGON_MAINNET_URL;
 const POLYGON_MUMBAI_URL = process.env.POLYGON_MUMBAI_URL;
 const SCROLL_TESTNET_URL = process.env.SCROLL_TESTNET_URL;
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
 const ARBISCAN_API_KEY = process.env.ARBISCAN_API_KEY;
+const POLYGONSCAN_API_KEY = process.env.POLYGONSCAN_API_KEY;
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -33,12 +36,20 @@ const config: HardhatUserConfig = {
       url: GOERLI_URL,
       accounts: [`${PRIVATE_KEY}`],
     },
+    arbitrumOne: {
+      url: ARBITRUM_ONE_URL,
+      accounts: [`${PRIVATE_KEY}`],
+    },
     arbitrumGoerli: {
       url: ARBITRUM_GOERLI_URL,
       accounts: [`${PRIVATE_KEY}`],
     },
     bscTestnet: {
       url: BSC_TESTNET_URL,
+      accounts: [`${PRIVATE_KEY}`],
+    },
+    polygonMainnet: {
+      url: POLYGON_MAINNET_URL,
       accounts: [`${PRIVATE_KEY}`],
     },
     polygonMumbai: {
@@ -51,7 +62,7 @@ const config: HardhatUserConfig = {
     },
   },
   etherscan: {
-    // apiKey: ETHERSCAN_API_KEY,
+    // apiKey: POLYGONSCAN_API_KEY,
     apiKey: ARBISCAN_API_KEY,
   },
 };

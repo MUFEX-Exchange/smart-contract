@@ -1,0 +1,18 @@
+{
+  "HotTreasury": {
+    "proxy": "0x763ecd00eEA0CDAECBDF97d88c3e0fd5457eE5A0",
+    "admin": "0x4de7597282b6d8932372951Ba0FE463D85339e22",
+    "implementation": "0x54196c33c1272F8740AfB24e9c7fce61fD2dff17"
+  },
+  "MainTreasury": {
+    "proxy": "0x16BEDB2Ab2aEf9023ff2cbF0C78135cA120c03C6",
+    "admin": "0x4de7597282b6d8932372951Ba0FE463D85339e22",
+    "implementation": "0x16d1263FeeFE802004eDC82Fd25679AAa05365Ae"
+  },
+  "Verifier": {
+    "proxy": "",
+    "admin": "",
+    "implementation": ""
+  },
+  "DepositWalletFactory": "0x4CDB65FA411698958416612Dd069d710c38a4351"
+}
