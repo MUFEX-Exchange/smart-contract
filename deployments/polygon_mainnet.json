@@ -14,5 +14,9 @@
     "admin": "",
     "implementation": ""
   },
-  "DepositWalletFactory": "0x4CDB65FA411698958416612Dd069d710c38a4351"
+  "DepositWalletFactory": {
+    "proxy": "0xc8a3A6D43E8Aa43187d7B7A1faeF21e65ACBa43b",
+    "admin": "0x4de7597282b6d8932372951Ba0FE463D85339e22",
+    "implementation": "0x2757900449AE3C547A7BA54814AEf7F03a3829b8"
+  }
 }

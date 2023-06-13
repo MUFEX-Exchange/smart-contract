@@ -34,6 +34,16 @@
       "address": "0x16BEDB2Ab2aEf9023ff2cbF0C78135cA120c03C6",
       "txHash": "0xf0374952b127734961371f07cda2c0d0281856ce7c213b247bcf4388f52c1951",
       "kind": "transparent"
+    },
+    {
+      "address": "0xfF052aBF3Cb53324eB3231F6a0d1d881A5263E2f",
+      "txHash": "0xdfdf125cf333625a366f6cc01dcd67f192ab71f5a3526b76708bc1a3d0a6ab8d",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xc8a3A6D43E8Aa43187d7B7A1faeF21e65ACBa43b",
+      "txHash": "0xef98ac3c552896c9d37d3c3de0623d48b226eace005e5c49dcb1a09cda15e1dd",
+      "kind": "transparent"
     }
   ],
   "impls": {
@@ -315,6 +325,98 @@
           "t_uint64": {
             "label": "uint64",
             "numberOfBytes": "8"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "664bf2638415a9666ba8f13f0957f72db2bf840704babfb53f1f29c9d6ea93ff": {
+      "address": "0x2757900449AE3C547A7BA54814AEf7F03a3829b8",
+      "txHash": "0x9be88e396fae9b28d9bb9f213bf216675f2f47cea283994d5509c7f2208faf2d",
+      "layout": {
+        "solcVersion": "0.8.18",
+        "storage": [
+          {
+            "label": "owner",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_address",
+            "contract": "Ownable",
+            "src": "contracts/Ownable.sol:5"
+          },
+          {
+            "label": "pendingOwner",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_address",
+            "contract": "Ownable",
+            "src": "contracts/Ownable.sol:6"
+          },
+          {
+            "label": "_initialized",
+            "offset": 20,
+            "slot": "1",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts/proxy/utils/Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 21,
+            "slot": "1",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts/proxy/utils/Initializable.sol:67"
+          },
+          {
+            "label": "treasury",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_address",
+            "contract": "DepositWalletFactory",
+            "src": "contracts/DepositWalletFactory.sol:13"
+          },
+          {
+            "label": "getWallet",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_mapping(t_bytes32,t_address)",
+            "contract": "DepositWalletFactory",
+            "src": "contracts/DepositWalletFactory.sol:14"
+          },
+          {
+            "label": "isOperator",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_mapping(t_address,t_bool)",
+            "contract": "DepositWalletFactory",
+            "src": "contracts/DepositWalletFactory.sol:15"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes32,t_address)": {
+            "label": "mapping(bytes32 => address)",
+            "numberOfBytes": "32"
           },
           "t_uint8": {
             "label": "uint8",
