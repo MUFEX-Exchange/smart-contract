@@ -2,6 +2,7 @@ import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 import "@nomiclabs/hardhat-etherscan";
 import "@openzeppelin/hardhat-upgrades";
+import "hardhat-contract-sizer";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -69,6 +70,11 @@ const config: HardhatUserConfig = {
   etherscan: {
     apiKey: POLYGONSCAN_API_KEY,
     // apiKey: ARBISCAN_API_KEY,
+  },
+  contractSizer: {
+    alphaSort: true,
+    runOnCompile: true,
+    disambiguatePaths: false,
   },
 };
 

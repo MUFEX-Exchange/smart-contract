@@ -11,6 +11,7 @@ interface IMainTreasury is ITreasury {
 
     function ETH() external view returns (address);
     function verifier() external view returns (address);
+    function withdrawTreasury() external view returns (address);
     function zkpId() external view returns (uint64);
     function getBalanceRoot(address token) external view returns (uint256);
     function getWithdrawRoot(address token) external view returns (uint256);
@@ -23,6 +24,7 @@ interface IMainTreasury is ITreasury {
     function forceWithdrawOpened() external view returns (bool);
 
     function setVerifier(address verifier_) external;
+    function setWithdrawTreasury(address withdrawTreasury_) external;
 
     function updateZKP(
         uint64 newZkpId,
@@ -33,17 +35,24 @@ interface IMainTreasury is ITreasury {
         uint256[] calldata newTotalWithdraws
     ) external;
 
-    function generalWithdraw(
-        uint256[] calldata proof,
-        uint256 index,
-        uint256 withdrawId,
-        uint256 accountId,
-        address account,
-        address to,
-        address token,
-        uint8 withdrawType,
-        uint256 amount
-    ) external;
+    struct GeneralWithdrawParams {
+        uint256[] proof;
+        uint256 index;
+        uint256 withdrawId;
+        uint256 accountId;
+        uint256 amount;
+        uint256 issuedAt;
+        uint256 expiresAt;
+        uint256 chainid;
+        string chainName;
+        address account;
+        address to;
+        address token;
+        uint8 withdrawType;
+        bytes userSignature;
+    }
+
+    function generalWithdraw(GeneralWithdrawParams calldata params) external;
 
     function forceWithdraw(
         uint256[] calldata proof,

@@ -7,12 +7,14 @@ import "./libraries/TransferHelper.sol";
 import "./libraries/MerkleProof.sol";
 import "./libraries/MiMC.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
+    using ECDSA for bytes32;
+
     address public constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
-
     address public override verifier;
-
+    address public override withdrawTreasury;
     uint64 public override zkpId;
 
     mapping(address => uint256) public override getBalanceRoot;
@@ -20,7 +22,6 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
     mapping(address => uint256) public override getTotalBalance;
     mapping(address => uint256) public override getTotalWithdraw;
     mapping(address => uint256) public override getWithdrawn;
-
     mapping(address => bool) public override getWithdrawFinished;
     
     uint256 public override lastUpdateTime;
@@ -50,6 +51,11 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
         require(verifier == address(0), "verifier already set");
         verifier = verifier_;
         emit VerifierSet(verifier_);
+    }
+
+    function setWithdrawTreasury(address withdrawTreasury_) external override onlyOwner {
+        require(withdrawTreasury_ != address(0), "zero address");
+        withdrawTreasury = withdrawTreasury_;
     }
 
     function updateZKP(
@@ -105,44 +111,45 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
     }
 
     function generalWithdraw(
-        uint256[] calldata proof,
-        uint256 index,
-        uint256 withdrawId,
-        uint256 accountId,
-        address account,
-        address to,
-        address token,
-        uint8 withdrawType,
-        uint256 amount
+        GeneralWithdrawParams calldata params
     ) external override onlyVerifierSet {
-        require(!isWithdrawn(token, index, true), "Drop already withdrawn");
+        require(!isWithdrawn(params.token, params.index, true), "Drop already withdrawn");
+        require(_verifySignature(params), "wrong signature");
+
         uint64 zkpId_ = zkpId;
         // Verify the merkle proof.
         uint256[] memory msgs = new uint256[](9);
         msgs[0] = zkpId_;
-        msgs[1] = index;
-        msgs[2] = withdrawId;
-        msgs[3] = accountId;
-        msgs[4] = uint256(uint160(account));
-        msgs[5] = uint256(uint160(to));
-        msgs[6] = uint256(uint160(token));
-        msgs[7] = withdrawType;
-        msgs[8] = amount;
+        msgs[1] = params.index;
+        msgs[2] = params.withdrawId;
+        msgs[3] = params.accountId;
+        msgs[4] = uint256(uint160(params.account));
+        msgs[5] = uint256(uint160(params.to));
+        msgs[6] = uint256(uint160(params.token));
+        msgs[7] = params.withdrawType;
+        msgs[8] = params.amount;
         uint256 node = MiMC.Hash(msgs);
-        require(MerkleProof.verify(proof, getWithdrawRoot[token], node), "Invalid proof");
+        require(MerkleProof.verify(params.proof, getWithdrawRoot[params.token], node), "Invalid proof");
         // Mark it withdrawn and send the token.
-        _setWithdrawn(token, index, true);
-        if (token == ETH) {
-            TransferHelper.safeTransferETH(to, amount);
-        } else {
-            TransferHelper.safeTransfer(token, to, amount);
+        _setWithdrawn(params.token, params.index, true);
+
+        address to = params.to;
+        if (params.withdrawType == 0) {
+            require(withdrawTreasury != address(0), "withdrawTreasury not set");
+            to = withdrawTreasury;
         }
 
-        getWithdrawn[token] += amount;
-        require(getWithdrawn[token] <= getTotalWithdraw[token], "over totalWithdraw");
-        if (getWithdrawn[token] == getTotalWithdraw[token]) getWithdrawFinished[token] = true;
+        if (params.token == ETH) {
+            TransferHelper.safeTransferETH(to, params.amount);
+        } else {
+            TransferHelper.safeTransfer(params.token, to, params.amount);
+        }
 
-        emit GeneralWithdrawn(token, account, to, zkpId_, index, amount);
+        getWithdrawn[params.token] += params.amount;
+        require(getWithdrawn[params.token] <= getTotalWithdraw[params.token], "over totalWithdraw");
+        if (getWithdrawn[params.token] == getTotalWithdraw[params.token]) getWithdrawFinished[params.token] = true;
+
+        emit GeneralWithdrawn(params.token, params.account, to, zkpId_, params.index, params.amount);
     }
 
     function forceWithdraw(
@@ -200,5 +207,28 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
             withdrawnInfo.forceWithdrawnBitMap[wordIndex] = withdrawnInfo.forceWithdrawnBitMap[wordIndex] | (1 << bitIndex);
             withdrawnInfo.allForceWithdrawnIndex.push(wordIndex);
         }
+    }
+
+    function _verifySignature(GeneralWithdrawParams calldata params) internal view returns (bool) {
+        uint256 chainid = block.chainid;
+        require(chainid == params.chainid, "wrong chainid");
+        require(params.expiresAt > block.timestamp, "expired");
+        string memory tokenName = IERC20(params.token).name();
+        address recover = keccak256(abi.encode(
+            params.withdrawId,
+            params.accountId,
+            params.account,
+            params.amount,
+            tokenName,
+            params.token,
+            params.to,
+            params.chainid,
+            params.chainName,
+            params.withdrawType,
+            params.issuedAt,
+            params.expiresAt
+        )).toEthSignedMessageHash().recover(params.userSignature);
+        require(recover == params.account, "wrong signer");
+        return true;
     }
 }
