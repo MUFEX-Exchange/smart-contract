@@ -116,6 +116,7 @@ contract Verifier is Ownable, Initializable {
         );
     }
 
+    // params need to be set memory, if set calldata will come out stack too deep error.
     function submit(
         uint64 zkpId,
         uint256[] memory BeforeAccountTreeRoot,

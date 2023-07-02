@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.10;
 
-import "./ITreasury.sol";
+import "./IBaseTreasury.sol";
 
-interface IMainTreasury is ITreasury {
+interface IMainTreasury is IBaseTreasury {
     event VerifierSet(address verifier);
     event ZKPUpdated(uint64 zkpId, address[] tokens, uint256[] balanceRoots, uint256[] withdrawRoots, uint256[] totalBalances, uint256[] totalWithdraws);
-    event GeneralWithdrawn(address token, address indexed account, address indexed to, uint64 zkpId, uint256 index, uint256 amount);
+    event GeneralWithdrawn(address token, address indexed account, address indexed to, uint64 zkpId, uint256 index, uint256 amount, uint256 withdrawId);
     event ForceWithdrawn(address token, address indexed account, uint64 zkpId, uint256 index, uint256 amount);
-
+    
     function ETH() external view returns (address);
     function verifier() external view returns (address);
     function withdrawTreasury() external view returns (address);
@@ -41,14 +41,14 @@ interface IMainTreasury is ITreasury {
         uint256 withdrawId;
         uint256 accountId;
         uint256 amount;
-        uint256 issuedAt;
-        uint256 expiresAt;
-        uint256 chainid;
-        string chainName;
         address account;
         address to;
         address token;
         uint8 withdrawType;
+        // juar for signature
+        string chainName;
+        string tokenName;
+        string expiresAt;
         bytes userSignature;
     }
 

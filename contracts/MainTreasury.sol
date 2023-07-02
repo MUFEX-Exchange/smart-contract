@@ -78,7 +78,8 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
 
         uint256 balanceOfThis;
         address token;
-        for (uint256 i = 0; i < tokens.length; i++) {
+        uint256 tokensLength = tokens.length;
+        for (uint256 i = 0; i < tokensLength; i++) {
             token = tokens[i];
             require(getWithdrawFinished[token], "last withdraw not finish yet");
             getWithdrawFinished[token] = false;
@@ -97,10 +98,12 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
 
             WithdrawnInfo storage withdrawnInfo = getWithdrawnInfo[token];
             // clear claimed records
-            for (uint256 j = 0; j < withdrawnInfo.allGeneralWithdrawnIndex.length; j++) {
+            uint256 length = withdrawnInfo.allGeneralWithdrawnIndex.length;
+            for (uint256 j = 0; j < length; j++) {
                 delete withdrawnInfo.generalWithdrawnBitMap[withdrawnInfo.allGeneralWithdrawnIndex[j]];
             }
             delete withdrawnInfo.allGeneralWithdrawnIndex;
+            delete getWithdrawn[token];
         }
 
         require(newZkpId > zkpId, "old zkp");
@@ -149,7 +152,7 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
         require(getWithdrawn[params.token] <= getTotalWithdraw[params.token], "over totalWithdraw");
         if (getWithdrawn[params.token] == getTotalWithdraw[params.token]) getWithdrawFinished[params.token] = true;
 
-        emit GeneralWithdrawn(params.token, params.account, to, zkpId_, params.index, params.amount);
+        emit GeneralWithdrawn(params.token, params.account, to, zkpId_, params.index, params.amount, params.withdrawId);
     }
 
     function forceWithdraw(
@@ -209,25 +212,18 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
         }
     }
 
-    function _verifySignature(GeneralWithdrawParams calldata params) internal view returns (bool) {
-        uint256 chainid = block.chainid;
-        require(chainid == params.chainid, "wrong chainid");
-        require(params.expiresAt > block.timestamp, "expired");
-        string memory tokenName = IERC20(params.token).name();
+    function _verifySignature(GeneralWithdrawParams calldata params) internal pure returns (bool) {
         address recover = keccak256(abi.encode(
-            params.withdrawId,
-            params.accountId,
-            params.account,
-            params.amount,
-            tokenName,
-            params.token,
-            params.to,
-            params.chainid,
-            params.chainName,
-            params.withdrawType,
-            params.issuedAt,
-            params.expiresAt
-        )).toEthSignedMessageHash().recover(params.userSignature);
+                params.amount,
+                params.to,
+                params.chainName,
+                params.tokenName,
+                params.account,
+                params.accountId,
+                params.withdrawId,
+                params.withdrawType,
+                params.expiresAt
+            )).toEthSignedMessageHash().recover(params.userSignature);
         require(recover == params.account, "wrong signer");
         return true;
     }

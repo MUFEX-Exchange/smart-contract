@@ -69,6 +69,7 @@ contract DepositWalletFactory is IDepositWalletFactory, Ownable, Initializable {
     }
 
     function batchCollectTokens(address[] calldata wallets, address[] calldata tokens, string[] calldata requestIds) external override onlyOperator {
+        require(wallets.length == tokens.length && tokens.length == requestIds.length, "length not the sanme");
         address[] memory tokens_ = new address[](1);
         string[] memory requestIds_ = new string[](1); 
         for (uint256 i = 0; i < wallets.length; i++) {
