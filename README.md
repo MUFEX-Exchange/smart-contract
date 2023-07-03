@@ -57,3 +57,7 @@ ZKP 校验合约，和 `MainTreasury` 搭配使用，合约可升级，只在 Ar
 最核心的是 `submit` 函数，用于提交新的 zkp，进行一些 zkp 校验之后，会触发 `MainTreasury` 合约的 `updateZKP` 函数。
 
 ZKP verify 使用的是 Groth16 算法。
+
+## 合约升级
+
+通过 `proxyAdmin` 的 `update` 函数实现合约升级。

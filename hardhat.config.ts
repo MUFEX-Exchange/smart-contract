@@ -68,8 +68,8 @@ const config: HardhatUserConfig = {
     },
   },
   etherscan: {
-    // apiKey: POLYGONSCAN_API_KEY,
-    apiKey: ARBISCAN_API_KEY,
+    apiKey: POLYGONSCAN_API_KEY,
+    // apiKey: ARBISCAN_API_KEY,
   },
   contractSizer: {
     alphaSort: true,
