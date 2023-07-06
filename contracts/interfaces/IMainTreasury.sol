@@ -45,11 +45,13 @@ interface IMainTreasury is IBaseTreasury {
         address to;
         address token;
         uint8 withdrawType;
-        // juar for signature
+        // just for signature
         string chainName;
         string tokenName;
         string expiresAt;
-        bytes userSignature;
+        uint8 v;
+        bytes32 r;
+        bytes32 s;
     }
 
     function generalWithdraw(GeneralWithdrawParams calldata params) external;

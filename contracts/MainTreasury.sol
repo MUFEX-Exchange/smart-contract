@@ -29,6 +29,21 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
 
     bool public override forceWithdrawOpened;
 
+    uint64 public constant ZKP_INTERVAL = 3600;
+    address public workingCapitalTreasury;
+    // zkpIndex => token => deposits
+    mapping(uint256 => mapping(address => uint256)) public totalDeposits;
+
+    bytes32 public DOMAIN_SEPARATOR;
+    bytes32 public constant DOMAIN_TYPEHASH =
+        keccak256(
+            "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
+        );
+    bytes32 public constant WITHDRAW_TYPEHASH =
+        keccak256(
+            "Withdraw(uint256 amount,address to,string chainName,string tokenName,address account,uint256 accountId,uint256 withdrawId,uint8 withdrawType,string expiresAt)"
+        );
+
     struct WithdrawnInfo {
         mapping(uint256 => uint256) generalWithdrawnBitMap;
         mapping(uint256 => uint256) forceWithdrawnBitMap;
@@ -47,6 +62,18 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
         forceTimeWindow = forceTimeWindow_;
     }
 
+    function setDOMAIN_SEPARATOR() external {
+        DOMAIN_SEPARATOR = keccak256(
+            abi.encode(
+                DOMAIN_TYPEHASH,
+                keccak256(bytes("MUFEX")),
+                keccak256(bytes("1")),
+                block.chainid,
+                address(this)
+            )
+        );
+    }
+
     function setVerifier(address verifier_) external override onlyOwner {
         require(verifier == address(0), "verifier already set");
         verifier = verifier_;
@@ -56,6 +83,61 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
     function setWithdrawTreasury(address withdrawTreasury_) external override onlyOwner {
         require(withdrawTreasury_ != address(0), "zero address");
         withdrawTreasury = withdrawTreasury_;
+    }
+
+    function setWorkingCapitalTreasury(address treasury_) external onlyOwner {
+        require(treasury_ != address(0), "zero address");
+        workingCapitalTreasury = treasury_;
+    }
+
+    function withdrawWorkingCapital(address[] calldata tokens) external onlyOwner {
+        address token;
+        uint256 balance;
+        uint256 length = tokens.length;
+        uint256 zkpIndex = _getZkpIndex();
+        for (uint256 i = 0; i < length; i++) {
+            token = tokens[i];
+            if (token == ETH) {
+                balance = address(this).balance;
+            } else {
+                balance = IERC20(token).balanceOf(address(this));
+            }
+            uint256 pending = totalDeposits[zkpIndex][token];
+            while (zkpIndex - ZKP_INTERVAL > zkpId) {
+                zkpIndex -= ZKP_INTERVAL;
+                pending += totalDeposits[zkpIndex][token];
+            }
+            uint256 needToLeft = pending + getTotalBalance[token] + getTotalWithdraw[token] - getWithdrawn[token];
+            uint256 withdrawable = balance - needToLeft;
+            if (withdrawable > 0) {
+                if (token == ETH) {
+                    TransferHelper.safeTransferETH(withdrawTreasury, withdrawable);
+                } else {
+                    TransferHelper.safeTransfer(token, withdrawTreasury, withdrawable);
+                }
+            }
+            getWithdrawn[token] += withdrawable;
+        }
+    }
+
+    function depositETH() external payable override(BaseTreasury, IBaseTreasury) {
+        require(msg.value > 0, "deposit amount is zero");
+
+        uint256 zkpIndex = _getZkpIndex();
+        totalDeposits[zkpIndex][ETH] += msg.value;
+        
+        emit EthDeposited(msg.sender, msg.value);
+    }
+
+    function depositToken(address token, uint256 amount) external override(BaseTreasury, IBaseTreasury) {
+        require(token != address(0), "zero address");
+        require(amount > 0, "deposit amount is zero");
+        TransferHelper.safeTransferFrom(token, msg.sender, address(this), amount);
+        
+        uint256 zkpIndex = _getZkpIndex();
+        totalDeposits[zkpIndex][token] += amount;
+
+        emit TokenDeposited(token, msg.sender, amount);
     }
 
     function updateZKP(
@@ -107,6 +189,7 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
         }
 
         require(newZkpId > zkpId, "old zkp");
+        require(newZkpId <= block.timestamp, "zkp over current time");
         zkpId = newZkpId;
         lastUpdateTime = block.timestamp;
 
@@ -212,19 +295,34 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
         }
     }
 
-    function _verifySignature(GeneralWithdrawParams calldata params) internal pure returns (bool) {
-        address recover = keccak256(abi.encode(
-                params.amount,
-                params.to,
-                params.chainName,
-                params.tokenName,
-                params.account,
-                params.accountId,
-                params.withdrawId,
-                params.withdrawType,
-                params.expiresAt
-            )).toEthSignedMessageHash().recover(params.userSignature);
+    function _verifySignature(GeneralWithdrawParams calldata params) internal view returns (bool) {
+        bytes32 digest = keccak256(
+            abi.encodePacked(
+                "\x19\x01",
+                DOMAIN_SEPARATOR,
+                keccak256(
+                    abi.encode(
+                        WITHDRAW_TYPEHASH,
+                        params.amount,
+                        params.to,
+                        params.chainName,
+                        params.tokenName,
+                        params.account,
+                        params.accountId,
+                        params.withdrawId,
+                        params.withdrawType,
+                        params.expiresAt
+                    )
+                )
+            )
+        );
+        address recover = ecrecover(digest, params.v, params.r, params.s);
         require(recover == params.account, "wrong signer");
         return true;
+    }
+
+    function _getZkpIndex() internal view returns (uint256) {
+        uint256 multiple = (block.timestamp - zkpId) / ZKP_INTERVAL + 1;
+        return multiple * ZKP_INTERVAL + zkpId;
     }
 }
