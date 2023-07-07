@@ -12,7 +12,7 @@
   "Verifier": {
     "proxy": "0xA42eFCE8110B8A599021D76f82dF01ca81a83ba8",
     "admin": "0x591F79D7386539E76c47Ec74C2B336FB37a59FC5",
-    "implementation": "0xB6b5c9E4d22F5d9668b24498BfcF7A098a34210b"
+    "implementation": "0xD6BEBc1e5CcE804eb3115827a6db0ebA62DF027A"
   },
   "DepositWalletFactory": {
     "proxy": "0xEa0243569E25e393120E1B692507E0cba606f6E9",

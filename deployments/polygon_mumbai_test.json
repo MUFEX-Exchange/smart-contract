@@ -14,8 +14,8 @@
   "Verifier": {
     "proxy": "0xE858c60Fe5f3C04C76B9739298E8508e396f407A",
     "admin": "0x4b6ADC156df552BCc1f59B8A92e6D86F9096865f",
-    "implementation(old)": "0xB4CFb14E71C18b28E6CD9762319e3f7501239956",
-    "implementation(new)": "0x213f8a9fd30260390a29C4A93D9E7443f7B39490"
+    "implementation(old)": "0xb4cfb14e71c18b28e6cd9762319e3f7501239956",
+    "implementation(new)": "0x4147D461C3Ae0624ec80F26679e43643AD880fd9"
   },
   "DepositWalletFactory": {
     "proxy": "0xd25AD33039297ba3b0Cf6bC1F87bdcA316c0dfF9",
