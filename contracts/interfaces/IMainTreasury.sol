@@ -22,6 +22,7 @@ interface IMainTreasury is IBaseTreasury {
     function lastUpdateTime() external view returns (uint256);
     function forceTimeWindow() external view returns (uint256);
     function forceWithdrawOpened() external view returns (bool);
+    function firstUpdated(address token) external view returns (bool);
 
     function setVerifier(address verifier_) external;
     function setWithdrawTreasury(address withdrawTreasury_) external;
@@ -46,6 +47,7 @@ interface IMainTreasury is IBaseTreasury {
         address token;
         uint8 withdrawType;
         // just for signature
+        uint256 fee;
         string chainName;
         string tokenName;
         string expiresAt;

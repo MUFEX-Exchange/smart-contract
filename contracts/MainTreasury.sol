@@ -23,6 +23,7 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
     mapping(address => uint256) public override getTotalWithdraw;
     mapping(address => uint256) public override getWithdrawn;
     mapping(address => bool) public override getWithdrawFinished;
+    mapping(address => bool) public override firstUpdated;
     
     uint256 public override lastUpdateTime;
     uint256 public override forceTimeWindow;
@@ -163,9 +164,13 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
         uint256 tokensLength = tokens.length;
         for (uint256 i = 0; i < tokensLength; i++) {
             token = tokens[i];
-            require(getWithdrawFinished[token], "last withdraw not finish yet");
-            getWithdrawFinished[token] = false;
-
+            if (!firstUpdated[token]) {
+                firstUpdated[token] = true;
+            } else {
+                require(getWithdrawFinished[token], "last withdraw not finish yet");
+                getWithdrawFinished[token] = false;
+            }
+            
             if (token == ETH) {
                 balanceOfThis = address(this).balance;
             } else {
@@ -311,6 +316,7 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
                         params.accountId,
                         params.withdrawId,
                         params.withdrawType,
+                        params.fee,
                         params.expiresAt
                     )
                 )

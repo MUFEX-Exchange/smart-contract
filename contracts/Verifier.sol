@@ -143,6 +143,8 @@ contract Verifier is Ownable, Initializable {
         require(BeforeAccountTreeRoot.length == b.length,"BeforeAccountTreeRoot.length != b.length");
         require(BeforeAccountTreeRoot.length == c.length,"BeforeAccountTreeRoot.length != c.length");
 
+        require(AfterCEXAssetsCommitment[AfterCEXAssetsCommitment.length - 1] == totalBalance, "wrong totalBalance");
+
         // 确保前一个数据的after值为后一个数据的before值
         for (uint256 i = 1; i < BeforeAccountTreeRoot.length; i++) {
             require(BeforeAccountTreeRoot[i] == AfterAccountTreeRoot[i-1],"BeforeAccountTreeRoot[i] != AfterAccountTreeRoot[i-1]");
