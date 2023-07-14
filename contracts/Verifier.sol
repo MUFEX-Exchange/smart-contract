@@ -130,7 +130,7 @@ contract Verifier is Ownable, Initializable {
         uint256[2][] memory a, // zk proof参数
         uint256[2][2][] memory b, // zk proof参数
         uint256[2][] memory c, // zk proof参数
-        uint256 withdrawMerkelTreeToot,
+        uint256 withdrawMerkelTreeRoot,
         uint256 totalBalance,
         uint256 totalWithdraw
     ) public returns (bool r) {
@@ -168,23 +168,23 @@ contract Verifier is Ownable, Initializable {
             require(rst,"zk proof fail");
         }
 
-        _updateZKP(zkpId, AfterAccountTreeRoot[AfterAccountTreeRoot.length - 1], withdrawMerkelTreeToot, totalBalance, totalWithdraw);
+        _updateZKP(zkpId, AfterAccountTreeRoot[AfterAccountTreeRoot.length - 1], withdrawMerkelTreeRoot, totalBalance, totalWithdraw);
         return true;
     }
 
     function _updateZKP(
         uint64 zkpId,
-        uint256 balanceMerkelTreeToot,
-        uint256 withdrawMerkelTreeToot,
+        uint256 balanceMerkelTreeRoot,
+        uint256 withdrawMerkelTreeRoot,
         uint256 totalBalance,
         uint256 totalWithdraw
     ) internal {
         address[] memory tokens = new address[](1);
         tokens[0] = usdt;
         uint256[] memory newBalanceRoots = new uint256[](1);
-        newBalanceRoots[0] = balanceMerkelTreeToot;
+        newBalanceRoots[0] = balanceMerkelTreeRoot;
         uint256[] memory newWithdrawRoots = new uint256[](1);
-        newWithdrawRoots[0] = withdrawMerkelTreeToot;
+        newWithdrawRoots[0] = withdrawMerkelTreeRoot;
         uint256[] memory newTotalBalances = new uint256[](1);
         newTotalBalances[0] = totalBalance;
         uint256[] memory newTotalWithdraws = new uint256[](1);
