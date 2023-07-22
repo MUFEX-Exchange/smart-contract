@@ -24,36 +24,36 @@ async function main() {
   console.log("HotTreasury Addresses:", hotTreasuryAddresses);
   await hotTreasury.addOperator(operator);
 
-  const MainTreasury = await ethers.getContractFactory("MainTreasury");
-  const mainTreasury = await upgrades.deployProxy(MainTreasury, [604800]);
-  await mainTreasury.deployed();
-  const mainTreasuryAddresses = {
-    proxy: mainTreasury.address,
-    admin: await upgrades.erc1967.getAdminAddress(mainTreasury.address),
-    implementation: await upgrades.erc1967.getImplementationAddress(
-      mainTreasury.address
-    ),
-  };
-  console.log("MainTreasury Addresses:", mainTreasuryAddresses);
-  await mainTreasury.addOperator(operator);
+  // const MainTreasury = await ethers.getContractFactory("MainTreasury");
+  // const mainTreasury = await upgrades.deployProxy(MainTreasury, [604800]);
+  // await mainTreasury.deployed();
+  // const mainTreasuryAddresses = {
+  //   proxy: mainTreasury.address,
+  //   admin: await upgrades.erc1967.getAdminAddress(mainTreasury.address),
+  //   implementation: await upgrades.erc1967.getImplementationAddress(
+  //     mainTreasury.address
+  //   ),
+  // };
+  // console.log("MainTreasury Addresses:", mainTreasuryAddresses);
+  // await mainTreasury.addOperator(operator);
 
-  const Verifier = await ethers.getContractFactory("Verifier");
-  const verifier = await upgrades.deployProxy(Verifier, [
-    operator,
-    mainTreasury.address,
-    USDT,
-  ]);
-  await verifier.deployed();
-  const verifierAddresses = {
-    proxy: verifier.address,
-    admin: await upgrades.erc1967.getAdminAddress(verifier.address),
-    implementation: await upgrades.erc1967.getImplementationAddress(
-      verifier.address
-    ),
-  };
-  console.log("Verifier Addresses:", verifierAddresses);
+  // const Verifier = await ethers.getContractFactory("Verifier");
+  // const verifier = await upgrades.deployProxy(Verifier, [
+  //   operator,
+  //   mainTreasury.address,
+  //   USDT,
+  // ]);
+  // await verifier.deployed();
+  // const verifierAddresses = {
+  //   proxy: verifier.address,
+  //   admin: await upgrades.erc1967.getAdminAddress(verifier.address),
+  //   implementation: await upgrades.erc1967.getImplementationAddress(
+  //     verifier.address
+  //   ),
+  // };
+  // console.log("Verifier Addresses:", verifierAddresses);
 
-  await mainTreasury.setVerifier(verifier.address);
+  // await mainTreasury.setVerifier(verifier.address);
 
   const DepositWalletFactory = await ethers.getContractFactory(
     "DepositWalletFactory"

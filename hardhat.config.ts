@@ -15,6 +15,9 @@ const POLYGON_MAINNET_URL = process.env.POLYGON_MAINNET_URL;
 const POLYGON_MUMBAI_URL = process.env.POLYGON_MUMBAI_URL;
 const SCROLL_TESTNET_URL = process.env.SCROLL_TESTNET_URL;
 const ZKSYNC_TESTNET_URL = process.env.ZKSYNC_TESTNET_URL;
+const OPBNB_TESTNET_URL = process.env.OPBNB_TESTNET_URL;
+const LINEA_TESTNET_URL = process.env.LINEA_TESTNET_URL;
+
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
 const ARBISCAN_API_KEY = process.env.ARBISCAN_API_KEY;
 const POLYGONSCAN_API_KEY = process.env.POLYGONSCAN_API_KEY;
@@ -66,6 +69,15 @@ const config: HardhatUserConfig = {
       url: ZKSYNC_TESTNET_URL,
       accounts: [`${PRIVATE_KEY}`],
     },
+    opBNBTestnet: {
+      url: OPBNB_TESTNET_URL,
+      accounts: [`${PRIVATE_KEY}`],
+      gasPrice: 35000000000,
+    },
+    lineaTestnet: {
+      url: LINEA_TESTNET_URL,
+      accounts: [`${PRIVATE_KEY}`],
+    },
   },
   etherscan: {
     // apiKey: POLYGONSCAN_API_KEY,
@@ -80,18 +92,21 @@ const config: HardhatUserConfig = {
 
 export default config;
 
-//// for zkSync
+// // for zkSync
 // import "@matterlabs/hardhat-zksync-deploy";
 // import "@matterlabs/hardhat-zksync-solc";
 // import "@matterlabs/hardhat-zksync-verify";
+// import "@matterlabs/hardhat-zksync-upgradable";
 
-// module.exports = {
+// import { HardhatUserConfig } from "hardhat/config";
+
+// const config: HardhatUserConfig = {
 //   zksolc: {
-//     version: "latest", // Uses latest available in https://github.com/matter-labs/zksolc-bin/
+//     version: "latest",
+//     compilerSource: "binary",
 //     settings: {},
 //   },
 //   defaultNetwork: "zkSyncTestnet",
-
 //   networks: {
 //     zkSyncTestnet: {
 //       url: "https://testnet.era.zksync.dev",
@@ -115,3 +130,5 @@ export default config;
 //     ],
 //   },
 // };
+
+// export default config;

@@ -42,7 +42,7 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
         );
     bytes32 public constant WITHDRAW_TYPEHASH =
         keccak256(
-            "Withdraw(uint256 amount,address to,string chainName,string tokenName,address account,uint256 accountId,uint256 withdrawId,uint8 withdrawType,string expiresAt)"
+            "Withdraw(uint256 amount,address to,string chainName,string tokenName,address account,uint256 accountId,uint256 fee,uint256 withdrawId,uint8 withdrawType,string expiresAt)"
         );
 
     struct WithdrawnInfo {
@@ -166,7 +166,7 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
             token = tokens[i];
             if (!firstUpdated[token]) {
                 firstUpdated[token] = true;
-            } else {
+            } else if (getTotalWithdraw[token] > 0) {
                 require(getWithdrawFinished[token], "last withdraw not finish yet");
                 getWithdrawFinished[token] = false;
             }
@@ -314,9 +314,9 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
                         params.tokenName,
                         params.account,
                         params.accountId,
+                        params.fee,
                         params.withdrawId,
                         params.withdrawType,
-                        params.fee,
                         params.expiresAt
                     )
                 )

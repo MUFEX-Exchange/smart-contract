@@ -7,12 +7,12 @@
   "MainTreasury": {
     "proxy": "0x46425e181dE3D25e403807e10266dEe23682E22E",
     "admin": "0xB6b5c9E4d22F5d9668b24498BfcF7A098a34210b",
-    "implementation": "0x5d270B192D7B839e56fcc70845903bFA664ce090"
+    "implementation": "0x1302C15B5FfBF71174155188cBa05b4594C6643C"
   },
   "Verifier": {
     "proxy": "0x3C70De87E56109A2E357e7338AA51002AD61D997",
     "admin": "0xB6b5c9E4d22F5d9668b24498BfcF7A098a34210b",
-    "implementation": "0x901bAe8c90D0B0Ad2eA62F04c7fcd8610370b903"
+    "implementation": "0x7e0821592D0254ef3692c338695bd02468cB5788"
   },
   "DepositWalletFactory": {
     "proxy": "0x7e730b57EeF3D50Da71040A19f0E54E7Eb16D945",

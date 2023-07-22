@@ -1,0 +1,181 @@
+{
+  "manifestVersion": "3.2",
+  "admin": {
+    "address": "0x3871AE9CBB881636835918Fd408781e682eE26E8",
+    "txHash": "0xd711d9981508e94a37093e3f20295399b4414d40e6d4bdc99d406b97b5bfbdbe"
+  },
+  "proxies": [
+    {
+      "address": "0xD4342B7CB7Bda6a4e446740796bdd272c5d166b2",
+      "txHash": "0x169c66bb8625214ca6630df24f661b065d4f1c0d1c7c39551391b59185787800",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x186ec52e5E76600580c9e8A3A52Ef5efB8174D5a",
+      "txHash": "0x897db3c636cfb7632a025ff964c2404f519546506497eb9fdbb04dacd8da525d",
+      "kind": "transparent"
+    }
+  ],
+  "impls": {
+    "507dcbd56553ea0b1927e98d77503b9ba3bea138479bb3c207e37b8a0304bebf": {
+      "address": "0x14d762160FA977F9df071a14D0a3881662cedF2D",
+      "txHash": "0x70b666a7ce1a9ba8d40087a0e866225e7733c5bfcf0b054a79df65e9364f4867",
+      "layout": {
+        "solcVersion": "0.8.18",
+        "storage": [
+          {
+            "label": "owner",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_address",
+            "contract": "Ownable",
+            "src": "contracts/Ownable.sol:5"
+          },
+          {
+            "label": "pendingOwner",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_address",
+            "contract": "Ownable",
+            "src": "contracts/Ownable.sol:6"
+          },
+          {
+            "label": "isOperator",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_mapping(t_address,t_bool)",
+            "contract": "BaseTreasury",
+            "src": "contracts/BaseTreasury.sol:10"
+          },
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts/proxy/utils/Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "3",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts/proxy/utils/Initializable.sol:67"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "db16c9d5b4df1b04940fa4805a9610d557a3fc50b0bc2295ec2c052ccb257718": {
+      "address": "0xc5cAB3a14f76FB1147207CE94aF333edE02DDCeB",
+      "txHash": "0x57b5efa53ca694ab0a20c844844ff066e02a5719278aece23147dd0ee893e7c6",
+      "layout": {
+        "solcVersion": "0.8.18",
+        "storage": [
+          {
+            "label": "owner",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_address",
+            "contract": "Ownable",
+            "src": "contracts/Ownable.sol:5"
+          },
+          {
+            "label": "pendingOwner",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_address",
+            "contract": "Ownable",
+            "src": "contracts/Ownable.sol:6"
+          },
+          {
+            "label": "_initialized",
+            "offset": 20,
+            "slot": "1",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts/proxy/utils/Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 21,
+            "slot": "1",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts/proxy/utils/Initializable.sol:67"
+          },
+          {
+            "label": "treasury",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_address",
+            "contract": "DepositWalletFactory",
+            "src": "contracts/DepositWalletFactory.sol:13"
+          },
+          {
+            "label": "getWallet",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_mapping(t_bytes32,t_address)",
+            "contract": "DepositWalletFactory",
+            "src": "contracts/DepositWalletFactory.sol:14"
+          },
+          {
+            "label": "isOperator",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_mapping(t_address,t_bool)",
+            "contract": "DepositWalletFactory",
+            "src": "contracts/DepositWalletFactory.sol:15"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes32,t_address)": {
+            "label": "mapping(bytes32 => address)",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    }
+  }
+}
