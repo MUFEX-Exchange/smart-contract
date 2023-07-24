@@ -8,9 +8,11 @@ import "./libraries/MerkleProof.sol";
 import "./libraries/MiMC.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
     using ECDSA for bytes32;
+    using Strings for uint256;
 
     address public constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
     address public override verifier;
@@ -42,7 +44,7 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
         );
     bytes32 public constant WITHDRAW_TYPEHASH =
         keccak256(
-            "Withdraw(uint256 amount,address to,string chainName,string tokenName,address account,uint256 accountId,uint256 fee,uint256 withdrawId,uint8 withdrawType,string expiresAt)"
+            "Withdraw(uint256 amount,address to,string chainName,string tokenName,address account,uint256 accountId,uint256 fee,string withdrawId,uint8 withdrawType,string expiresAt)"
         );
 
     struct WithdrawnInfo {
@@ -315,7 +317,7 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
                         params.account,
                         params.accountId,
                         params.fee,
-                        params.withdrawId,
+                        params.withdrawId.toHexString(),
                         params.withdrawType,
                         params.expiresAt
                     )

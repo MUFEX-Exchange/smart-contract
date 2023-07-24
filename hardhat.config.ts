@@ -98,9 +98,9 @@ const config: HardhatUserConfig = {
 export default config;
 
 // // for zkSync
-// import "@matterlabs/hardhat-zksync-deploy";
 // import "@matterlabs/hardhat-zksync-solc";
-// import "@matterlabs/hardhat-zksync-verify";
+// import "@matterlabs/hardhat-zksync-deploy";
+// // upgradable plugin
 // import "@matterlabs/hardhat-zksync-upgradable";
 
 // import { HardhatUserConfig } from "hardhat/config";
@@ -108,31 +108,22 @@ export default config;
 // const config: HardhatUserConfig = {
 //   zksolc: {
 //     version: "latest",
-//     compilerSource: "binary",
 //     settings: {},
 //   },
-//   defaultNetwork: "zkSyncTestnet",
+//   defaultNetwork: "zkSyncNetwork",
 //   networks: {
-//     zkSyncTestnet: {
-//       url: "https://testnet.era.zksync.dev",
-//       ethNetwork: "goerli", // RPC URL of the network (e.g. `https://goerli.infura.io/v3/<API_KEY>`)
+//     goerli: {
+//       zksync: false,
+//       url: "http://localhost:8545",
+//     },
+//     zkSyncNetwork: {
 //       zksync: true,
-//       verifyURL:
-//         "https://zksync2-testnet-explorer.zksync.dev/contract_verification", // Verification endpoint
+//       ethNetwork: "goerli",
+//       url: "http://localhost:3050",
 //     },
 //   },
 //   solidity: {
-//     compilers: [
-//       {
-//         version: "0.8.18",
-//         settings: {
-//           optimizer: {
-//             enabled: true,
-//             runs: 200,
-//           },
-//         },
-//       },
-//     ],
+//     version: "0.8.19",
 //   },
 // };
 

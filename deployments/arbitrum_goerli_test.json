@@ -7,7 +7,7 @@
   "MainTreasury": {
     "proxy": "0xf2Dc2D31c75aC0BBB7cFDc30475fcbF38F520AF9",
     "admin": "0xB6b5c9E4d22F5d9668b24498BfcF7A098a34210b",
-    "implementation": "0x1302C15B5FfBF71174155188cBa05b4594C6643C"
+    "implementation": "0x4C0623ea7360d1f4C973F42E5Ca07C504c3a1088"
   },
   "Verifier": {
     "proxy": "0xE858c60Fe5f3C04C76B9739298E8508e396f407A",
