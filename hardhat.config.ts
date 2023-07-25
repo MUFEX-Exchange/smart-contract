@@ -17,7 +17,8 @@ const SCROLL_TESTNET_URL = process.env.SCROLL_TESTNET_URL;
 const ZKSYNC_TESTNET_URL = process.env.ZKSYNC_TESTNET_URL;
 const OPBNB_TESTNET_URL = process.env.OPBNB_TESTNET_URL;
 const LINEA_TESTNET_URL = process.env.LINEA_TESTNET_URL;
-const POLYGON_ZKEVM_TESTNET = process.env.POLYGON_ZKEVM_TESTNET;
+const POLYGON_ZKEVM_TESTNET_URL = process.env.POLYGON_ZKEVM_TESTNET_URL;
+const MANTLE_TESTNET_URL = process.env.MANTLE_TESTNET_URL;
 
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
 const ARBISCAN_API_KEY = process.env.ARBISCAN_API_KEY;
@@ -80,7 +81,11 @@ const config: HardhatUserConfig = {
       accounts: [`${PRIVATE_KEY}`],
     },
     polygonZKEVMTestnet: {
-      url: POLYGON_ZKEVM_TESTNET,
+      url: POLYGON_ZKEVM_TESTNET_URL,
+      accounts: [`${PRIVATE_KEY}`],
+    },
+    mantleTestnet: {
+      url: MANTLE_TESTNET_URL,
       accounts: [`${PRIVATE_KEY}`],
     },
   },
