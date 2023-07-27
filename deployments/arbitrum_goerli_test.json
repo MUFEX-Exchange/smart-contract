@@ -1,22 +1,22 @@
 {
   "HotTreasury": {
-    "proxy": "0x0F40A645c71161380C8c7aF8Cf53B4580710620f",
+    "proxy": "0x1E3bB92268A5403F16CE5c43170F20f909816987",
     "admin": "0xB6b5c9E4d22F5d9668b24498BfcF7A098a34210b",
-    "implementation": "0x5b413b1b2B634044110d1a7fab81d8474361ed35"
+    "implementation": "0x0e6002e0fa3E4a6a56FeDFE1b261F28A770eC5CE"
   },
   "MainTreasury": {
-    "proxy": "0xf2Dc2D31c75aC0BBB7cFDc30475fcbF38F520AF9",
+    "proxy": "0x9bb7eA38871912866315F3eA3774877fa3d0c481",
     "admin": "0xB6b5c9E4d22F5d9668b24498BfcF7A098a34210b",
-    "implementation": "0x4C0623ea7360d1f4C973F42E5Ca07C504c3a1088"
+    "implementation": "0x4334E9923288E2A71D4FdFdceF30B18F24dfF23f"
   },
   "Verifier": {
-    "proxy": "0xE858c60Fe5f3C04C76B9739298E8508e396f407A",
+    "proxy": "0x12eC56cDC1075Fccd0683efF19fdF76D35EF563C",
     "admin": "0xB6b5c9E4d22F5d9668b24498BfcF7A098a34210b",
-    "implementation": "0x7e0821592D0254ef3692c338695bd02468cB5788"
+    "implementation": "0x403A604aDde534Bb08Ce3911137B48ac6aF123A1"
   },
   "DepositWalletFactory": {
-    "proxy": "0xd25AD33039297ba3b0Cf6bC1F87bdcA316c0dfF9",
+    "proxy": "0x5d0B4A8138610D1FE598d0C63EF55C6c11Bd0829",
     "admin": "0xB6b5c9E4d22F5d9668b24498BfcF7A098a34210b",
-    "implementation": "0xE0b3fC4E7b175E2c7dbacf67772F24d9Fe17D410"
+    "implementation": "0x432aad1e9434794BA40b5a04b4329Ae76ca94cb3"
   }
 }

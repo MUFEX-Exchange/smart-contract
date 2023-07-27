@@ -20,10 +20,12 @@ const LINEA_TESTNET_URL = process.env.LINEA_TESTNET_URL;
 const POLYGON_ZKEVM_TESTNET_URL = process.env.POLYGON_ZKEVM_TESTNET_URL;
 const MANTLE_TESTNET_URL = process.env.MANTLE_TESTNET_URL;
 const BASE_TESTNET_URL = process.env.BASE_TESTNET_URL;
+const BSC_MAINNET_URL = process.env.BSC_MAINNET_URL;
 
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
 const ARBISCAN_API_KEY = process.env.ARBISCAN_API_KEY;
 const POLYGONSCAN_API_KEY = process.env.POLYGONSCAN_API_KEY;
+const BSC_API_KEY = process.env.BSC_API_KEY;
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -94,10 +96,14 @@ const config: HardhatUserConfig = {
       accounts: [`${PRIVATE_KEY}`],
       gasPrice: 35000000000,
     },
+    bscMainnet: {
+      url: BSC_MAINNET_URL,
+      accounts: [`${PRIVATE_KEY}`],
+    },
   },
   etherscan: {
-    // apiKey: POLYGONSCAN_API_KEY,
-    apiKey: ARBISCAN_API_KEY,
+    apiKey: BSC_API_KEY,
+    // apiKey: ARBISCAN_API_KEY,
   },
   contractSizer: {
     alphaSort: true,
