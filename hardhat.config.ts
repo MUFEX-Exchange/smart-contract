@@ -57,6 +57,7 @@ const config: HardhatUserConfig = {
     bscTestnet: {
       url: BSC_TESTNET_URL,
       accounts: [`${PRIVATE_KEY}`],
+      gasPrice: 35000000000,
     },
     polygonMainnet: {
       url: POLYGON_MAINNET_URL,

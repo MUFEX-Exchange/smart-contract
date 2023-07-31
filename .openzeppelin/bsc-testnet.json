@@ -44,6 +44,21 @@
       "address": "0xEa0243569E25e393120E1B692507E0cba606f6E9",
       "txHash": "0xad50427c6485b37840aec57ba153aa70bf3c35591f99d293e8a36babf4df692e",
       "kind": "transparent"
+    },
+    {
+      "address": "0xE9F48Fe3A9a16E28BF762ebAB0a7abED2BF31453",
+      "txHash": "0x02bdde2fb144e6c683afd214e0de980424e10b25f9723201b41f2fdd4f165aee",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x39633f885a6DfD07E1Ef0E0498655e2666d9193d",
+      "txHash": "0xaa5dd2c5a9a65a8ee0d9250dfe2beec35d46c4bb82263276ffbc6300ac2f4280",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x6345a378B8580A00FE47A29960e9Af6c5BE41d7A",
+      "txHash": "0xe1db673dd837ddce1ff813835a2f58602f8a21b8403d779b76b7303dc7e3e20c",
+      "kind": "transparent"
     }
   ],
   "impls": {
@@ -416,6 +431,166 @@
     "664bf2638415a9666ba8f13f0957f72db2bf840704babfb53f1f29c9d6ea93ff": {
       "address": "0x1f39669f32D7C59904A868ca5Ea5f517C6ae062f",
       "txHash": "0xacaa55044994cc31d923dcf4933c2c5b2387c389d0e4b70a8de24f53f0609a35",
+      "layout": {
+        "solcVersion": "0.8.18",
+        "storage": [
+          {
+            "label": "owner",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_address",
+            "contract": "Ownable",
+            "src": "contracts/Ownable.sol:5"
+          },
+          {
+            "label": "pendingOwner",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_address",
+            "contract": "Ownable",
+            "src": "contracts/Ownable.sol:6"
+          },
+          {
+            "label": "_initialized",
+            "offset": 20,
+            "slot": "1",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts/proxy/utils/Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 21,
+            "slot": "1",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts/proxy/utils/Initializable.sol:67"
+          },
+          {
+            "label": "treasury",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_address",
+            "contract": "DepositWalletFactory",
+            "src": "contracts/DepositWalletFactory.sol:13"
+          },
+          {
+            "label": "getWallet",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_mapping(t_bytes32,t_address)",
+            "contract": "DepositWalletFactory",
+            "src": "contracts/DepositWalletFactory.sol:14"
+          },
+          {
+            "label": "isOperator",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_mapping(t_address,t_bool)",
+            "contract": "DepositWalletFactory",
+            "src": "contracts/DepositWalletFactory.sol:15"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes32,t_address)": {
+            "label": "mapping(bytes32 => address)",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "507dcbd56553ea0b1927e98d77503b9ba3bea138479bb3c207e37b8a0304bebf": {
+      "address": "0xDC91D2B5D0BC197CaE271367b4c2fa481D563afB",
+      "txHash": "0x57506fead2adc0186f48c6b1fb8d698ec55921f60b0d405e69525aa568920a3c",
+      "layout": {
+        "solcVersion": "0.8.18",
+        "storage": [
+          {
+            "label": "owner",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_address",
+            "contract": "Ownable",
+            "src": "contracts/Ownable.sol:5"
+          },
+          {
+            "label": "pendingOwner",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_address",
+            "contract": "Ownable",
+            "src": "contracts/Ownable.sol:6"
+          },
+          {
+            "label": "isOperator",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_mapping(t_address,t_bool)",
+            "contract": "BaseTreasury",
+            "src": "contracts/BaseTreasury.sol:10"
+          },
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts/proxy/utils/Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "3",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts/proxy/utils/Initializable.sol:67"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "db16c9d5b4df1b04940fa4805a9610d557a3fc50b0bc2295ec2c052ccb257718": {
+      "address": "0x6AbdeF13447A94e4bFE1551e8479Eae53A651bE0",
+      "txHash": "0x056c147a2a82e7ba9e93d90efd2480f25206d6cb6580793bcdd20940eeed5300",
       "layout": {
         "solcVersion": "0.8.18",
         "storage": [

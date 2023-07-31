@@ -13,18 +13,18 @@ async function main() {
   const operator = "0xC37fd327a09A3eC0df4885c366474C5E46119Cd0"; // Testnet
   // const operator = "0xcfb32e61535e13b482f7684de7c784611455a214"; // Mainnet
 
-  const HotTreasury = await ethers.getContractFactory("HotTreasury");
-  const hotTreasury = await upgrades.deployProxy(HotTreasury, []);
-  await hotTreasury.deployed();
-  await hotTreasury.addOperator(operator);
-  const hotTreasuryAddresses = {
-    proxy: hotTreasury.address,
-    admin: await upgrades.erc1967.getAdminAddress(hotTreasury.address),
-    implementation: await upgrades.erc1967.getImplementationAddress(
-      hotTreasury.address
-    ),
-  };
-  console.log("HotTreasury Addresses:", hotTreasuryAddresses);
+  // const HotTreasury = await ethers.getContractFactory("HotTreasury");
+  // const hotTreasury = await upgrades.deployProxy(HotTreasury, []);
+  // await hotTreasury.deployed();
+  // await hotTreasury.addOperator(operator);
+  // const hotTreasuryAddresses = {
+  //   proxy: hotTreasury.address,
+  //   admin: await upgrades.erc1967.getAdminAddress(hotTreasury.address),
+  //   implementation: await upgrades.erc1967.getImplementationAddress(
+  //     hotTreasury.address
+  //   ),
+  // };
+  // console.log("HotTreasury Addresses:", hotTreasuryAddresses);
 
   // const MainTreasury = await ethers.getContractFactory("MainTreasury");
   // const mainTreasury = await upgrades.deployProxy(MainTreasury, [604800]);
@@ -62,7 +62,7 @@ async function main() {
   );
   const depositWalletFactory = await upgrades.deployProxy(
     DepositWalletFactory,
-    [hotTreasury.address]
+    ["0x39633f885a6DfD07E1Ef0E0498655e2666d9193d"]
   );
   await depositWalletFactory.deployed();
   await depositWalletFactory.addOperator(operator);
@@ -75,9 +75,9 @@ async function main() {
   };
   console.log("DepositWalletFactory Addresses:", depositWalletFactoryAddresses);
 
-  // const mainTreasury = await ethers.getContractAt(
-  //   "MainTreasury",
-  //   "0xf2Dc2D31c75aC0BBB7cFDc30475fcbF38F520AF9"
+  // const hotTreasury = await ethers.getContractAt(
+  //   "DepositWalletFactory",
+  //   "0x788560d0b4A14c03dC045835d7De1dd13c763596"
   // );
   // await hotTreasury.setPendingOwner(
   //   "0xDB0c0c2e0A54372a2C1134941c4Ee6414e582371"
