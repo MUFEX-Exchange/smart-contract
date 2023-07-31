@@ -20,7 +20,7 @@ contract SignatureVerifier {
         );
     bytes32 public constant WITHDRAW_TYPEHASH1 =
         keccak256(
-            "Withdraw(uint8 withdrawType)"
+            "Withdraw(string chainName)"
         );
     bytes32 public constant WITHDRAW_TYPEHASH2 =
         keccak256(
@@ -79,7 +79,7 @@ contract SignatureVerifier {
         );
     }
 
-    function verify0(address account, uint8 withdrawType, uint8 v, bytes32 r, bytes32 s) external view returns (bytes32 digest, address recover, bool success) {
+    function verify0(address account, string calldata chainName, uint8 v, bytes32 r, bytes32 s) external view returns (bytes32 digest, address recover, bool success) {
         digest = keccak256(
             abi.encodePacked(
                 "\x19\x01",
@@ -87,7 +87,7 @@ contract SignatureVerifier {
                 keccak256(
                     abi.encode(
                         WITHDRAW_TYPEHASH1,
-                        withdrawType
+                        keccak256(bytes(chainName))
                     )
                 )
             )
@@ -96,7 +96,7 @@ contract SignatureVerifier {
         success = (recover == account);
     }
 
-    function verify1(address account, uint8 withdrawType, uint8 v, bytes32 r, bytes32 s) external view returns (bytes32 digest, address recover, bool success) {
+    function verify1(address account, string calldata chainName, uint8 v, bytes32 r, bytes32 s) external view returns (bytes32 digest, address recover, bool success) {
         digest = keccak256(
             abi.encodePacked(
                 "\x19\x01",
@@ -104,7 +104,7 @@ contract SignatureVerifier {
                 keccak256(
                     abi.encode(
                         WITHDRAW_TYPEHASH1,
-                        withdrawType
+                        keccak256(bytes(chainName))
                     )
                 )
             )
@@ -152,7 +152,7 @@ contract SignatureVerifier {
                         WITHDRAW_TYPEHASH3,
                         withdrawType,
                         amount,
-                        chainName
+                        keccak256(bytes(chainName))
                     )
                 )
             )
@@ -178,8 +178,8 @@ contract SignatureVerifier {
                         WITHDRAW_TYPEHASH4,
                         withdrawType,
                         amount,
-                        chainName,
-                        tokenName
+                        keccak256(bytes(chainName)),
+                        keccak256(bytes(tokenName))
                     )
                 )
             )
@@ -206,8 +206,8 @@ contract SignatureVerifier {
                         WITHDRAW_TYPEHASH5,
                         withdrawType,
                         amount,
-                        chainName,
-                        tokenName,
+                        keccak256(bytes(chainName)),
+                        keccak256(bytes(tokenName)),
                         accountId
                     )
                 )
@@ -236,8 +236,8 @@ contract SignatureVerifier {
                         WITHDRAW_TYPEHASH6,
                         withdrawType,
                         amount,
-                        chainName,
-                        tokenName,
+                        keccak256(bytes(chainName)),
+                        keccak256(bytes(tokenName)),
                         accountId,
                         fee
                     )
@@ -274,11 +274,11 @@ contract SignatureVerifier {
                         WITHDRAW_TYPEHASH7,
                         param.withdrawType,
                         param.amount,
-                        param.chainName,
-                        param.tokenName,
+                        keccak256(bytes(param.chainName)),
+                        keccak256(bytes(param.tokenName)),
                         param.accountId,
                         param.fee,
-                        param.withdrawId.toHexString()
+                        keccak256(bytes(param.withdrawId.toHexString()))
                     )
                 )
             )
@@ -314,12 +314,12 @@ contract SignatureVerifier {
                         WITHDRAW_TYPEHASH8,
                         param.withdrawType,
                         param.amount,
-                        param.chainName,
-                        param.tokenName,
+                        keccak256(bytes(param.chainName)),
+                        keccak256(bytes(param.tokenName)),
                         param.accountId,
                         param.fee,
-                        param.withdrawId.toHexString(),
-                        param.expiresAt
+                        keccak256(bytes(param.withdrawId.toHexString())),
+                        keccak256(bytes(param.expiresAt))
                     )
                 )
             )
@@ -356,12 +356,12 @@ contract SignatureVerifier {
                         WITHDRAW_TYPEHASH9,
                         param.withdrawType,
                         param.amount,
-                        param.chainName,
-                        param.tokenName,
+                        keccak256(bytes(param.chainName)),
+                        keccak256(bytes(param.tokenName)),
                         param.accountId,
                         param.fee,
-                        param.withdrawId.toHexString(),
-                        param.expiresAt,
+                        keccak256(bytes(param.withdrawId.toHexString())),
+                        keccak256(bytes(param.expiresAt)),
                         param.to
                     )
                 )
@@ -383,12 +383,12 @@ contract SignatureVerifier {
                         WITHDRAW_TYPEHASH10,
                         param.withdrawType,
                         param.amount,
-                        param.chainName,
-                        param.tokenName,
+                        keccak256(bytes(param.chainName)),
+                        keccak256(bytes(param.tokenName)),
                         param.accountId,
                         param.fee,
-                        param.withdrawId.toHexString(),
-                        param.expiresAt,
+                        keccak256(bytes(param.withdrawId.toHexString())),
+                        keccak256(bytes(param.expiresAt)),
                         param.to,
                         param.account
                     )

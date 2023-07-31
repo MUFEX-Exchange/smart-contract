@@ -312,14 +312,14 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
                         WITHDRAW_TYPEHASH,
                         params.amount,
                         params.to,
-                        params.chainName,
-                        params.tokenName,
+                        keccak256(bytes(params.chainName)),
+                        keccak256(bytes(params.tokenName)),
                         params.account,
                         params.accountId,
                         params.fee,
-                        params.withdrawId.toHexString(),
+                        keccak256(bytes(params.withdrawId.toHexString())),
                         params.withdrawType,
-                        params.expiresAt
+                        keccak256(bytes(params.expiresAt))
                     )
                 )
             )

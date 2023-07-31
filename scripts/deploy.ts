@@ -8,26 +8,26 @@ async function main() {
   // console.log("HotTreasury", hotTreasury.address);
   // console.log(verifyStr, process.env.HARDHAT_NETWORK, hotTreasury.address);
 
-  // const MainTreasury = await ethers.getContractFactory("MainTreasury");
-  // const mainTreasury = await MainTreasury.deploy();
-  // console.log("MainTreasury", mainTreasury.address);
-  // console.log(verifyStr, process.env.HARDHAT_NETWORK, mainTreasury.address);
+  const MainTreasury = await ethers.getContractFactory("MainTreasury");
+  const mainTreasury = await MainTreasury.deploy();
+  console.log("MainTreasury", mainTreasury.address);
+  console.log(verifyStr, process.env.HARDHAT_NETWORK, mainTreasury.address);
 
   // const Verifier = await ethers.getContractFactory("Verifier");
   // const verifier = await Verifier.deploy();
   // console.log("Verifier", verifier.address);
   // console.log(verifyStr, process.env.HARDHAT_NETWORK, verifier.address);
 
-  const DepositWalletFactory = await ethers.getContractFactory(
-    "DepositWalletFactory"
-  );
-  const depositWalletFactory = await DepositWalletFactory.deploy();
-  console.log("DepositWalletFactory:", depositWalletFactory.address);
-  console.log(
-    verifyStr,
-    process.env.HARDHAT_NETWORK,
-    depositWalletFactory.address
-  );
+  // const DepositWalletFactory = await ethers.getContractFactory(
+  //   "DepositWalletFactory"
+  // );
+  // const depositWalletFactory = await DepositWalletFactory.deploy();
+  // console.log("DepositWalletFactory:", depositWalletFactory.address);
+  // console.log(
+  //   verifyStr,
+  //   process.env.HARDHAT_NETWORK,
+  //   depositWalletFactory.address
+  // );
 
   // const treasury = await ethers.getContractAt(
   //   "DepositWalletFactory",

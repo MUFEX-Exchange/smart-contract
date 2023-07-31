@@ -103,8 +103,8 @@ const config: HardhatUserConfig = {
     },
   },
   etherscan: {
-    apiKey: BSC_API_KEY,
-    // apiKey: ARBISCAN_API_KEY,
+    // apiKey: BSC_API_KEY,
+    apiKey: ARBISCAN_API_KEY,
   },
   contractSizer: {
     alphaSort: true,
