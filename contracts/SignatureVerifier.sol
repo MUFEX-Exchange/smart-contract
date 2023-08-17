@@ -58,6 +58,10 @@ contract SignatureVerifier {
         keccak256(
             "Withdraw(uint8 withdrawType,uint256 amount,string chainName,string tokenName,uint256 accountId,uint256 fee,string withdrawId,string expiresAt,address to,address account)"
         );
+    bytes32 public constant WITHDRAW_TYPEHASH =
+        keccak256(
+            "Withdraw(uint256 amount,address to,string chainName,string tokenName,address account,uint256 accountId,uint256 fee,string withdrawId,uint8 withdrawType,string expiresAt)"
+        );
 
     constructor() {
         DOMAIN_SEPARATOR0 = keccak256(
@@ -401,5 +405,51 @@ contract SignatureVerifier {
 
     function convertUint256ToHexString(uint256 withdrawId) external pure returns (string memory) {
         return withdrawId.toHexString();
+    }
+
+    struct GeneralWithdrawParams {
+        uint256[] proof;
+        uint256 index;
+        uint256 withdrawId;
+        uint256 accountId;
+        uint256 amount;
+        address account;
+        address to;
+        address token;
+        uint8 withdrawType;
+        // just for signature
+        uint256 fee;
+        string chainName;
+        string tokenName;
+        string expiresAt;
+        uint8 v;
+        bytes32 r;
+        bytes32 s;
+    }
+
+    function verifySignature(GeneralWithdrawParams calldata params) external view returns (bytes32 digest, address recover, bool success) {
+        digest = keccak256(
+            abi.encodePacked(
+                "\x19\x01",
+                DOMAIN_SEPARATOR1,
+                keccak256(
+                    abi.encode(
+                        WITHDRAW_TYPEHASH,
+                        params.amount,
+                        params.to,
+                        keccak256(bytes(params.chainName)),
+                        keccak256(bytes(params.tokenName)),
+                        params.account,
+                        params.accountId,
+                        params.fee,
+                        keccak256(bytes(params.withdrawId.toHexString())),
+                        params.withdrawType,
+                        keccak256(bytes(params.expiresAt))
+                    )
+                )
+            )
+        );
+        recover = ecrecover(digest, params.v, params.r, params.s);
+        success = (recover == params.account);
     }
 }

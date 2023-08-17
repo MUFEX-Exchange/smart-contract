@@ -8,10 +8,10 @@ async function main() {
   // console.log("HotTreasury", hotTreasury.address);
   // console.log(verifyStr, process.env.HARDHAT_NETWORK, hotTreasury.address);
 
-  const MainTreasury = await ethers.getContractFactory("MainTreasury");
-  const mainTreasury = await MainTreasury.deploy();
-  console.log("MainTreasury", mainTreasury.address);
-  console.log(verifyStr, process.env.HARDHAT_NETWORK, mainTreasury.address);
+  // const MainTreasury = await ethers.getContractFactory("MainTreasury");
+  // const mainTreasury = await MainTreasury.deploy();
+  // console.log("MainTreasury", mainTreasury.address);
+  // console.log(verifyStr, process.env.HARDHAT_NETWORK, mainTreasury.address);
 
   // const Verifier = await ethers.getContractFactory("Verifier");
   // const verifier = await Verifier.deploy();
@@ -36,15 +36,15 @@ async function main() {
   // await treasury.setPendingOwner("0xdb0c0c2e0a54372a2c1134941c4ee6414e582371");
   // console.log("success");
 
-  // const SignatureVerifier = await ethers.getContractFactory(
-  //   "SignatureVerifier"
-  // );
-  // const signatureVerifier = await SignatureVerifier.deploy();
-  // console.log(
-  //   verifyStr,
-  //   process.env.HARDHAT_NETWORK,
-  //   signatureVerifier.address
-  // );
+  const SignatureVerifier = await ethers.getContractFactory(
+    "SignatureVerifier"
+  );
+  const signatureVerifier = await SignatureVerifier.deploy();
+  console.log(
+    verifyStr,
+    process.env.HARDHAT_NETWORK,
+    signatureVerifier.address
+  );
 }
 
 // We recommend this pattern to be able to use async/await everywhere

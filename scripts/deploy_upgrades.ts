@@ -57,31 +57,31 @@ async function main() {
 
   // await mainTreasury.setVerifier(verifier.address);
 
-  // const DepositWalletFactory = await ethers.getContractFactory(
-  //   "DepositWalletFactory"
-  // );
-  // const depositWalletFactory = await upgrades.deployProxy(
-  //   DepositWalletFactory,
-  //   ["0x39633f885a6DfD07E1Ef0E0498655e2666d9193d"]
-  // );
-  // await depositWalletFactory.deployed();
-  // await depositWalletFactory.addOperator(operator);
-  // const depositWalletFactoryAddresses = {
-  //   proxy: depositWalletFactory.address,
-  //   admin: await upgrades.erc1967.getAdminAddress(depositWalletFactory.address),
-  //   implementation: await upgrades.erc1967.getImplementationAddress(
-  //     depositWalletFactory.address
-  //   ),
-  // };
-  // console.log("DepositWalletFactory Addresses:", depositWalletFactoryAddresses);
+  const DepositWalletFactory = await ethers.getContractFactory(
+    "DepositWalletFactory"
+  );
+  const depositWalletFactory = await upgrades.deployProxy(
+    DepositWalletFactory,
+    ["0xE78806f1D1a198c51529e36Dbb24641fD62F1848"]
+  );
+  await depositWalletFactory.deployed();
+  await depositWalletFactory.addOperator(operator);
+  const depositWalletFactoryAddresses = {
+    proxy: depositWalletFactory.address,
+    admin: await upgrades.erc1967.getAdminAddress(depositWalletFactory.address),
+    implementation: await upgrades.erc1967.getImplementationAddress(
+      depositWalletFactory.address
+    ),
+  };
+  console.log("DepositWalletFactory Addresses:", depositWalletFactoryAddresses);
 
-  const hotTreasury = await ethers.getContractAt(
-    "DepositWalletFactory",
-    "0x6345a378B8580A00FE47A29960e9Af6c5BE41d7A"
-  );
-  await hotTreasury.setPendingOwner(
-    "0x19B1bfB0D762D65Be924Aa4d5b9A61308D16085B"
-  );
+  // const hotTreasury = await ethers.getContractAt(
+  //   "DepositWalletFactory",
+  //   "0x6345a378B8580A00FE47A29960e9Af6c5BE41d7A"
+  // );
+  // await hotTreasury.setPendingOwner(
+  //   "0x19B1bfB0D762D65Be924Aa4d5b9A61308D16085B"
+  // );
   // await mainTreasury.setPendingOwner(
   //   "0xDB0c0c2e0A54372a2C1134941c4Ee6414e582371"
   // );
