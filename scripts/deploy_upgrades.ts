@@ -8,61 +8,63 @@ async function main() {
   // const USDT = "0x84f3eBe8048C5047b35bd2c70E1EEE4dC4b755b6"; // Arbitrum Goerli
   // const USDT = "0x665f1c610b32bb793e9ae5f09ea5dddd0e407e1a"; // Polygon Mumbai
   // const USDT = "0xffa501dff91737ff5fafdaa788b8d00002034b6c"; // bscTestnet
-  const USDT = "0xf56dc6695cF1f5c364eDEbC7Dc7077ac9B586068"; // Linea Testnet
+  // const USDT = "0xf56dc6695cF1f5c364eDEbC7Dc7077ac9B586068"; // Linea Testnet
+  const USDT = "0x2ed3c15ec59ce827c4abbabff76d37562558437d"; // Mantle Testnet
 
   const operator = "0xC37fd327a09A3eC0df4885c366474C5E46119Cd0"; // Testnet
   // const operator = "0xcfb32e61535e13b482f7684de7c784611455a214"; // Mainnet
 
-  // const HotTreasury = await ethers.getContractFactory("HotTreasury");
-  // const hotTreasury = await upgrades.deployProxy(HotTreasury, []);
-  // await hotTreasury.deployed();
-  // await hotTreasury.addOperator(operator);
-  // const hotTreasuryAddresses = {
-  //   proxy: hotTreasury.address,
-  //   admin: await upgrades.erc1967.getAdminAddress(hotTreasury.address),
-  //   implementation: await upgrades.erc1967.getImplementationAddress(
-  //     hotTreasury.address
-  //   ),
-  // };
-  // console.log("HotTreasury Addresses:", hotTreasuryAddresses);
+  const HotTreasury = await ethers.getContractFactory("HotTreasury");
+  const hotTreasury = await upgrades.deployProxy(HotTreasury, []);
+  await hotTreasury.deployed();
+  await hotTreasury.addOperator(operator);
+  const hotTreasuryAddresses = {
+    proxy: hotTreasury.address,
+    admin: await upgrades.erc1967.getAdminAddress(hotTreasury.address),
+    implementation: await upgrades.erc1967.getImplementationAddress(
+      hotTreasury.address
+    ),
+  };
+  console.log("HotTreasury Addresses:", hotTreasuryAddresses);
 
-  // const MainTreasury = await ethers.getContractFactory("MainTreasury");
-  // const mainTreasury = await upgrades.deployProxy(MainTreasury, [604800]);
-  // await mainTreasury.deployed();
-  // const mainTreasuryAddresses = {
-  //   proxy: mainTreasury.address,
-  //   admin: await upgrades.erc1967.getAdminAddress(mainTreasury.address),
-  //   implementation: await upgrades.erc1967.getImplementationAddress(
-  //     mainTreasury.address
-  //   ),
-  // };
-  // console.log("MainTreasury Addresses:", mainTreasuryAddresses);
-  // await mainTreasury.addOperator(operator);
+  const MainTreasury = await ethers.getContractFactory("MainTreasury");
+  const mainTreasury = await upgrades.deployProxy(MainTreasury, [604800]);
+  await mainTreasury.deployed();
+  const mainTreasuryAddresses = {
+    proxy: mainTreasury.address,
+    admin: await upgrades.erc1967.getAdminAddress(mainTreasury.address),
+    implementation: await upgrades.erc1967.getImplementationAddress(
+      mainTreasury.address
+    ),
+  };
+  console.log("MainTreasury Addresses:", mainTreasuryAddresses);
+  await mainTreasury.addOperator(operator);
+  await mainTreasury.setDOMAIN_SEPARATOR();
 
-  // const Verifier = await ethers.getContractFactory("Verifier");
-  // const verifier = await upgrades.deployProxy(Verifier, [
-  //   operator,
-  //   mainTreasury.address,
-  //   USDT,
-  // ]);
-  // await verifier.deployed();
-  // const verifierAddresses = {
-  //   proxy: verifier.address,
-  //   admin: await upgrades.erc1967.getAdminAddress(verifier.address),
-  //   implementation: await upgrades.erc1967.getImplementationAddress(
-  //     verifier.address
-  //   ),
-  // };
-  // console.log("Verifier Addresses:", verifierAddresses);
+  const Verifier = await ethers.getContractFactory("Verifier");
+  const verifier = await upgrades.deployProxy(Verifier, [
+    operator,
+    mainTreasury.address,
+    USDT,
+  ]);
+  await verifier.deployed();
+  const verifierAddresses = {
+    proxy: verifier.address,
+    admin: await upgrades.erc1967.getAdminAddress(verifier.address),
+    implementation: await upgrades.erc1967.getImplementationAddress(
+      verifier.address
+    ),
+  };
+  console.log("Verifier Addresses:", verifierAddresses);
 
-  // await mainTreasury.setVerifier(verifier.address);
+  await mainTreasury.setVerifier(verifier.address);
 
   const DepositWalletFactory = await ethers.getContractFactory(
     "DepositWalletFactory"
   );
   const depositWalletFactory = await upgrades.deployProxy(
     DepositWalletFactory,
-    ["0xE78806f1D1a198c51529e36Dbb24641fD62F1848"]
+    [mainTreasury.address]
   );
   await depositWalletFactory.deployed();
   await depositWalletFactory.addOperator(operator);
@@ -75,16 +77,22 @@ async function main() {
   };
   console.log("DepositWalletFactory Addresses:", depositWalletFactoryAddresses);
 
-  // const hotTreasury = await ethers.getContractAt(
+  // const mainTreasury = await ethers.getContractAt(
   //   "DepositWalletFactory",
-  //   "0x6345a378B8580A00FE47A29960e9Af6c5BE41d7A"
+  //   "0x8Aa16E608F0CD41899D89C838b2E9B2Acfa10956"
   // );
-  // await hotTreasury.setPendingOwner(
-  //   "0x19B1bfB0D762D65Be924Aa4d5b9A61308D16085B"
-  // );
-  // await mainTreasury.setPendingOwner(
-  //   "0xDB0c0c2e0A54372a2C1134941c4Ee6414e582371"
-  // );
+  // await mainTreasury.setDOMAIN_SEPARATOR();
+
+  await hotTreasury.setPendingOwner(
+    "0xDB0c0c2e0A54372a2C1134941c4Ee6414e582371"
+  );
+  await mainTreasury.setPendingOwner(
+    "0xDB0c0c2e0A54372a2C1134941c4Ee6414e582371"
+  );
+  await verifier.setPendingOwner("0xDB0c0c2e0A54372a2C1134941c4Ee6414e582371");
+  await depositWalletFactory.setPendingOwner(
+    "0xDB0c0c2e0A54372a2C1134941c4Ee6414e582371"
+  );
   // await verifier.setPendingOwner("0xDB0c0c2e0A54372a2C1134941c4Ee6414e582371");
   // await depositWalletFactory.setPendingOwner(
   //   "0xDB0c0c2e0A54372a2C1134941c4Ee6414e582371"

@@ -14,6 +14,51 @@
       "address": "0x186ec52e5E76600580c9e8A3A52Ef5efB8174D5a",
       "txHash": "0x07617e4d7b58a83f988fe0d1fa644a61f9d22283bf85584fa4d57807842924f7",
       "kind": "transparent"
+    },
+    {
+      "address": "0x72407Fc5932e85DF0dBa1E2E973C400228749adA",
+      "txHash": "0xd41e8aa631a9311e14bf3820875be38df7985b3a33f6bd41fcf0e383b2a6ceb4",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xFC1E040F8eb110e25942485B681f9433226F888a",
+      "txHash": "0x623f5f3458f606725ca52231dce69aa2bafc5be8255afa03c0218b017cf0bc3a",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x98a20DBcb69f1d259f61249e44B2f9603A001643",
+      "txHash": "0xca70e8186a7d4455924b4b0bd82930e7fa52cb673a4ac0b17ef7ca71e984c5e0",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x7EdA38B5136AbB58d84523BC026143f2f396eEA2",
+      "txHash": "0x4b7ff7a85786d394c7e8157169d7940e462e44173cd35c03d83bd3ff79bcf8e3",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x8Aa16E608F0CD41899D89C838b2E9B2Acfa10956",
+      "txHash": "0xf4f43afacb77d9bf4fb34ece456b3bbce5e54472a587f31f408835e4aa7acb1a",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xB6b5c9E4d22F5d9668b24498BfcF7A098a34210b",
+      "txHash": "0x5e6efd487f5a8d211639ae130b7a1c9dd6a489decd3744a44987fbab2cf50c12",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x439855A21275cDAb35a72FC707650f02ADF73212",
+      "txHash": "0xeb25c63dbd8575ebe41a241d1b2d99bb1084cd866236055f9f77755094fce7f5",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xD6BEBc1e5CcE804eb3115827a6db0ebA62DF027A",
+      "txHash": "0x50ebfe753a77aa1b9c818168ffb7ade13a7b146a1876a858f3ec630d3ea57abc",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x7261F32B3c4af0b88b64fC2C6bBc198c0532FE82",
+      "txHash": "0xe2ad3d433d2f93b5059551e02cc246aab67ce7567492d5c5c38bd3d8c69e0628",
+      "kind": "transparent"
     }
   ],
   "impls": {
@@ -169,6 +214,352 @@
           "t_mapping(t_bytes32,t_address)": {
             "label": "mapping(bytes32 => address)",
             "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "c5112fdc9301d2eef54177f27bbfa37acaed12aff616967ad32193dce9c938e2": {
+      "address": "0x788560d0b4A14c03dC045835d7De1dd13c763596",
+      "txHash": "0xc4c7d054999fe96c66a3b997d138147663c5a2209c993d73f163424d626927a9",
+      "layout": {
+        "solcVersion": "0.8.18",
+        "storage": [
+          {
+            "label": "owner",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_address",
+            "contract": "Ownable",
+            "src": "contracts/Ownable.sol:5"
+          },
+          {
+            "label": "pendingOwner",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_address",
+            "contract": "Ownable",
+            "src": "contracts/Ownable.sol:6"
+          },
+          {
+            "label": "isOperator",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_mapping(t_address,t_bool)",
+            "contract": "BaseTreasury",
+            "src": "contracts/BaseTreasury.sol:10"
+          },
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts/proxy/utils/Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "3",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts/proxy/utils/Initializable.sol:67"
+          },
+          {
+            "label": "verifier",
+            "offset": 2,
+            "slot": "3",
+            "type": "t_address",
+            "contract": "MainTreasury",
+            "src": "contracts/MainTreasury.sol:18"
+          },
+          {
+            "label": "withdrawTreasury",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_address",
+            "contract": "MainTreasury",
+            "src": "contracts/MainTreasury.sol:19"
+          },
+          {
+            "label": "zkpId",
+            "offset": 20,
+            "slot": "4",
+            "type": "t_uint64",
+            "contract": "MainTreasury",
+            "src": "contracts/MainTreasury.sol:20"
+          },
+          {
+            "label": "getBalanceRoot",
+            "offset": 0,
+            "slot": "5",
+            "type": "t_mapping(t_address,t_uint256)",
+            "contract": "MainTreasury",
+            "src": "contracts/MainTreasury.sol:22"
+          },
+          {
+            "label": "getWithdrawRoot",
+            "offset": 0,
+            "slot": "6",
+            "type": "t_mapping(t_address,t_uint256)",
+            "contract": "MainTreasury",
+            "src": "contracts/MainTreasury.sol:23"
+          },
+          {
+            "label": "getTotalBalance",
+            "offset": 0,
+            "slot": "7",
+            "type": "t_mapping(t_address,t_uint256)",
+            "contract": "MainTreasury",
+            "src": "contracts/MainTreasury.sol:24"
+          },
+          {
+            "label": "getTotalWithdraw",
+            "offset": 0,
+            "slot": "8",
+            "type": "t_mapping(t_address,t_uint256)",
+            "contract": "MainTreasury",
+            "src": "contracts/MainTreasury.sol:25"
+          },
+          {
+            "label": "getWithdrawn",
+            "offset": 0,
+            "slot": "9",
+            "type": "t_mapping(t_address,t_uint256)",
+            "contract": "MainTreasury",
+            "src": "contracts/MainTreasury.sol:26"
+          },
+          {
+            "label": "getWithdrawFinished",
+            "offset": 0,
+            "slot": "10",
+            "type": "t_mapping(t_address,t_bool)",
+            "contract": "MainTreasury",
+            "src": "contracts/MainTreasury.sol:27"
+          },
+          {
+            "label": "firstUpdated",
+            "offset": 0,
+            "slot": "11",
+            "type": "t_mapping(t_address,t_bool)",
+            "contract": "MainTreasury",
+            "src": "contracts/MainTreasury.sol:28"
+          },
+          {
+            "label": "lastUpdateTime",
+            "offset": 0,
+            "slot": "12",
+            "type": "t_uint256",
+            "contract": "MainTreasury",
+            "src": "contracts/MainTreasury.sol:30"
+          },
+          {
+            "label": "forceTimeWindow",
+            "offset": 0,
+            "slot": "13",
+            "type": "t_uint256",
+            "contract": "MainTreasury",
+            "src": "contracts/MainTreasury.sol:31"
+          },
+          {
+            "label": "forceWithdrawOpened",
+            "offset": 0,
+            "slot": "14",
+            "type": "t_bool",
+            "contract": "MainTreasury",
+            "src": "contracts/MainTreasury.sol:33"
+          },
+          {
+            "label": "workingCapitalTreasury",
+            "offset": 1,
+            "slot": "14",
+            "type": "t_address",
+            "contract": "MainTreasury",
+            "src": "contracts/MainTreasury.sol:36"
+          },
+          {
+            "label": "totalDeposits",
+            "offset": 0,
+            "slot": "15",
+            "type": "t_mapping(t_uint256,t_mapping(t_address,t_uint256))",
+            "contract": "MainTreasury",
+            "src": "contracts/MainTreasury.sol:38"
+          },
+          {
+            "label": "DOMAIN_SEPARATOR",
+            "offset": 0,
+            "slot": "16",
+            "type": "t_bytes32",
+            "contract": "MainTreasury",
+            "src": "contracts/MainTreasury.sol:40"
+          },
+          {
+            "label": "getWithdrawnInfo",
+            "offset": 0,
+            "slot": "17",
+            "type": "t_mapping(t_address,t_struct(WithdrawnInfo)2166_storage)",
+            "contract": "MainTreasury",
+            "src": "contracts/MainTreasury.sol:56"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)dyn_storage": {
+            "label": "uint256[]",
+            "numberOfBytes": "32"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_struct(WithdrawnInfo)2166_storage)": {
+            "label": "mapping(address => struct MainTreasury.WithdrawnInfo)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_mapping(t_address,t_uint256))": {
+            "label": "mapping(uint256 => mapping(address => uint256))",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_uint256)": {
+            "label": "mapping(uint256 => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_struct(WithdrawnInfo)2166_storage": {
+            "label": "struct MainTreasury.WithdrawnInfo",
+            "members": [
+              {
+                "label": "generalWithdrawnBitMap",
+                "type": "t_mapping(t_uint256,t_uint256)",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "forceWithdrawnBitMap",
+                "type": "t_mapping(t_uint256,t_uint256)",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "allGeneralWithdrawnIndex",
+                "type": "t_array(t_uint256)dyn_storage",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "allForceWithdrawnIndex",
+                "type": "t_array(t_uint256)dyn_storage",
+                "offset": 0,
+                "slot": "3"
+              }
+            ],
+            "numberOfBytes": "128"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint64": {
+            "label": "uint64",
+            "numberOfBytes": "8"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "7bdb329197516deac627fe889b1b3cef6f4773400ecd795600d929340c4462e0": {
+      "address": "0x27486385A077d65894539b7e039c107032449d77",
+      "txHash": "0x2293a700b09f5ca9eb2ca57298b21c2a3b1d1d1cc4556d2d61f4ed3782299efa",
+      "layout": {
+        "solcVersion": "0.8.18",
+        "storage": [
+          {
+            "label": "owner",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_address",
+            "contract": "Ownable",
+            "src": "contracts/Ownable.sol:5"
+          },
+          {
+            "label": "pendingOwner",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_address",
+            "contract": "Ownable",
+            "src": "contracts/Ownable.sol:6"
+          },
+          {
+            "label": "_initialized",
+            "offset": 20,
+            "slot": "1",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts/proxy/utils/Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 21,
+            "slot": "1",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts/proxy/utils/Initializable.sol:67"
+          },
+          {
+            "label": "operator",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_address",
+            "contract": "Verifier",
+            "src": "contracts/Verifier.sol:18"
+          },
+          {
+            "label": "mainTreasury",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_address",
+            "contract": "Verifier",
+            "src": "contracts/Verifier.sol:19"
+          },
+          {
+            "label": "usdt",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_address",
+            "contract": "Verifier",
+            "src": "contracts/Verifier.sol:20"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
           },
           "t_uint8": {
             "label": "uint8",

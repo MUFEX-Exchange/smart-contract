@@ -101,6 +101,10 @@ const config: HardhatUserConfig = {
       url: BSC_MAINNET_URL,
       accounts: [`${PRIVATE_KEY}`],
     },
+    tronTestnet: {
+      url: process.env.TRON_TESTNET_URL,
+      accounts: [`${PRIVATE_KEY}`],
+    },
   },
   etherscan: {
     // apiKey: BSC_API_KEY,
