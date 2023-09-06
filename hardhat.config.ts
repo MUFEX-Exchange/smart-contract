@@ -88,6 +88,10 @@ const config: HardhatUserConfig = {
       url: POLYGON_ZKEVM_TESTNET_URL,
       accounts: [`${PRIVATE_KEY}`],
     },
+    mantleMainnet: {
+      url: process.env.MANTLE_MAINNET_URL,
+      accounts: [`${PRIVATE_KEY}`],
+    },
     mantleTestnet: {
       url: MANTLE_TESTNET_URL,
       accounts: [`${PRIVATE_KEY}`],
@@ -107,8 +111,8 @@ const config: HardhatUserConfig = {
     },
   },
   etherscan: {
-    // apiKey: BSC_API_KEY,
-    apiKey: ARBISCAN_API_KEY,
+    apiKey: process.env.MANTLE_API_KEY,
+    // apiKey: ARBISCAN_API_KEY,
   },
   contractSizer: {
     alphaSort: true,

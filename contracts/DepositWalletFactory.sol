@@ -39,7 +39,7 @@ contract DepositWalletFactory is IDepositWalletFactory, Ownable, Initializable {
 
     function predicteWallet(bytes32 salt) external view returns (address wallet) {
         wallet = address(uint160(uint(keccak256(abi.encodePacked(
-            bytes1(0xff),
+            bytes1(0xff), // TRON use 0x41, others use 0xff
             address(this),
             salt,
             keccak256(type(DepositWallet).creationCode)

@@ -63,9 +63,6 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
     function initialize(uint256 forceTimeWindow_) external initializer {
         owner = msg.sender;
         forceTimeWindow = forceTimeWindow_;
-    }
-
-    function setDOMAIN_SEPARATOR() external {
         DOMAIN_SEPARATOR = keccak256(
             abi.encode(
                 DOMAIN_TYPEHASH,
@@ -76,6 +73,18 @@ contract MainTreasury is IMainTreasury, BaseTreasury, Initializable {
             )
         );
     }
+
+    // function setDOMAIN_SEPARATOR() external {
+    //     DOMAIN_SEPARATOR = keccak256(
+    //         abi.encode(
+    //             DOMAIN_TYPEHASH,
+    //             keccak256(bytes("MUFEX")),
+    //             keccak256(bytes("1")),
+    //             block.chainid,
+    //             address(this)
+    //         )
+    //     );
+    // }
 
     function setVerifier(address verifier_) external override onlyOwner {
         require(verifier == address(0), "verifier already set");
