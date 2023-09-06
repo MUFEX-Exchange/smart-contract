@@ -15,24 +15,24 @@ async function main() {
   console.log("MainTreasury", mainTreasury.address);
   console.log(verifyStr, process.env.HARDHAT_NETWORK, mainTreasury.address);
 
-  const Verifier = await ethers.getContractFactory("Verifier");
-  const verifier = await Verifier.deploy();
-  console.log("Verifier", verifier.address);
-  console.log(verifyStr, process.env.HARDHAT_NETWORK, verifier.address);
+  // const Verifier = await ethers.getContractFactory("Verifier");
+  // const verifier = await Verifier.deploy();
+  // console.log("Verifier", verifier.address);
+  // console.log(verifyStr, process.env.HARDHAT_NETWORK, verifier.address);
 
-  const DepositWalletFactory = await ethers.getContractFactory(
-    "DepositWalletFactory"
-  );
-  const depositWalletFactory = await DepositWalletFactory.deploy(
-    mainTreasury.address
-  );
-  console.log("DepositWalletFactory:", depositWalletFactory.address);
-  console.log(
-    verifyStr,
-    process.env.HARDHAT_NETWORK,
-    depositWalletFactory.address,
-    mainTreasury.address
-  );
+  // const DepositWalletFactory = await ethers.getContractFactory(
+  //   "DepositWalletFactory"
+  // );
+  // const depositWalletFactory = await DepositWalletFactory.deploy(
+  //   mainTreasury.address
+  // );
+  // console.log("DepositWalletFactory:", depositWalletFactory.address);
+  // console.log(
+  //   verifyStr,
+  //   process.env.HARDHAT_NETWORK,
+  //   depositWalletFactory.address,
+  //   mainTreasury.address
+  // );
 }
 
 // We recommend this pattern to be able to use async/await everywhere

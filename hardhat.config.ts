@@ -60,6 +60,14 @@ const config: HardhatUserConfig = {
       url: SCROLL_TESTNET_URL,
       accounts: [`${PRIVATE_KEY}`],
     },
+    mantleMainnet: {
+      url: process.env.MANTLE_MAINNET_URL,
+      accounts: [`${PRIVATE_KEY}`],
+    },
+    mantleTestnet: {
+      url: process.env.MANTLE_TESTNET_URL,
+      accounts: [`${PRIVATE_KEY}`],
+    },
   },
   etherscan: {
     // apiKey: POLYGONSCAN_API_KEY,
