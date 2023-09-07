@@ -88,7 +88,7 @@ const config: HardhatUserConfig = {
       url: POLYGON_ZKEVM_TESTNET_URL,
       accounts: [`${PRIVATE_KEY}`],
     },
-    mantleMainnet: {
+    mantle: {
       url: process.env.MANTLE_MAINNET_URL,
       accounts: [`${PRIVATE_KEY}`],
     },
