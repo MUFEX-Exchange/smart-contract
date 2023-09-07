@@ -34,7 +34,7 @@ async function main() {
     ),
   };
   console.log("MainTreasury Addresses:", mainTreasuryAddresses);
-  await mainTreasury.addOperator(operator);
+  // await mainTreasury.addOperator(operator);
 
   // const Verifier = await ethers.getContractFactory("Verifier");
   // const verifier = await upgrades.deployProxy(Verifier, [
