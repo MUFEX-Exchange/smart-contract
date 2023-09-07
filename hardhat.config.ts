@@ -111,8 +111,20 @@ const config: HardhatUserConfig = {
     },
   },
   etherscan: {
-    apiKey: process.env.MANTLE_API_KEY,
     // apiKey: ARBISCAN_API_KEY,
+    apiKey: {
+      mantle: ETHERSCAN_API_KEY,
+    },
+    customChains: [
+      {
+        network: "mantle", // name here must match the apiKey object
+        chainId: 5000, // 5001 for testnet
+        urls: {
+          apiURL: "https://explorer.mantle.xyz/api",
+          browserURL: "https://explorer.mantle.xyz/",
+        },
+      },
+    ],
   },
   contractSizer: {
     alphaSort: true,

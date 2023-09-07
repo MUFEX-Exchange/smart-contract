@@ -143,7 +143,7 @@ contract Prediction is Ownable, Pausable, ReentrancyGuard {
         require(_treasuryFee <= MAX_TREASURY_FEE, "Treasury fee too high");
 
         token = _token;
-        oracle = AggregatorV3Interface(_oracleAddress);
+        oracle = IPyth(_oracleAddress);
         adminAddress = _adminAddress;
         operatorAddress = _operatorAddress;
         intervalSeconds = _intervalSeconds;
@@ -375,10 +375,10 @@ contract Prediction is Ownable, Pausable, ReentrancyGuard {
     function setOracle(address _oracle) external whenPaused onlyAdmin {
         require(_oracle != address(0), "Cannot be zero address");
         oracleLatestRoundId = 0;
-        oracle = AggregatorV3Interface(_oracle);
+        oracle = IPyth(_oracle);
 
         // Dummy check to make sure the interface implements this function properly
-        oracle.latestRoundData();
+        // oracle.latestRoundData();
 
         emit NewOracle(_oracle);
     }
@@ -644,13 +644,13 @@ contract Prediction is Ownable, Pausable, ReentrancyGuard {
      */
     function _getPriceFromOracle() internal view returns (uint80, int256) {
         uint256 leastAllowedTimestamp = block.timestamp + oracleUpdateAllowance;
-        (uint80 roundId, int256 price, , uint256 timestamp, ) = oracle.latestRoundData();
-        require(timestamp <= leastAllowedTimestamp, "Oracle update exceeded max timestamp allowance");
-        require(
-            uint256(roundId) > oracleLatestRoundId,
-            "Oracle update roundId must be larger than oracleLatestRoundId"
-        );
-        return (roundId, price);
+        // (uint80 roundId, int256 price, , uint256 timestamp, ) = oracle.getPrice();
+        // require(timestamp <= leastAllowedTimestamp, "Oracle update exceeded max timestamp allowance");
+        // require(
+        //     uint256(roundId) > oracleLatestRoundId,
+        //     "Oracle update roundId must be larger than oracleLatestRoundId"
+        // );
+        // return (roundId, price);
     }
 
     /**
