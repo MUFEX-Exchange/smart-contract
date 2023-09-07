@@ -60,7 +60,7 @@ const config: HardhatUserConfig = {
       url: SCROLL_TESTNET_URL,
       accounts: [`${PRIVATE_KEY}`],
     },
-    mantleMainnet: {
+    mantle: {
       url: process.env.MANTLE_MAINNET_URL,
       accounts: [`${PRIVATE_KEY}`],
     },
@@ -70,8 +70,20 @@ const config: HardhatUserConfig = {
     },
   },
   etherscan: {
-    // apiKey: POLYGONSCAN_API_KEY,
-    apiKey: ARBISCAN_API_KEY,
+    // apiKey: ARBISCAN_API_KEY,
+    apiKey: {
+      mantle: ETHERSCAN_API_KEY,
+    },
+    customChains: [
+      {
+        network: "mantle",
+        chainId: 5000,
+        urls: {
+          apiURL: "https://explorer.mantle.xyz/api",
+          browserURL: "https://explorer.mantle.xyz/",
+        },
+      },
+    ],
   },
 };
 
