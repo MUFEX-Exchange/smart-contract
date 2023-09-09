@@ -88,7 +88,7 @@ const config: HardhatUserConfig = {
       url: POLYGON_ZKEVM_TESTNET_URL,
       accounts: [`${PRIVATE_KEY}`],
     },
-    mantle: {
+    mantleMainnet: {
       url: process.env.MANTLE_MAINNET_URL,
       accounts: [`${PRIVATE_KEY}`],
     },
@@ -112,16 +112,22 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     // apiKey: ARBISCAN_API_KEY,
-    apiKey: {
-      mantle: ETHERSCAN_API_KEY,
-    },
+    apiKey: ETHERSCAN_API_KEY,
     customChains: [
       {
-        network: "mantle", // name here must match the apiKey object
+        network: "mantleMainnet", // name here must match the apiKey object
         chainId: 5000, // 5001 for testnet
         urls: {
           apiURL: "https://explorer.mantle.xyz/api",
           browserURL: "https://explorer.mantle.xyz/",
+        },
+      },
+      {
+        network: "mantleTestnet", // name here must match the apiKey object
+        chainId: 5001, // 5001 for testnet
+        urls: {
+          apiURL: "https://explorer.testnet.mantle.xyz/api",
+          browserURL: "https://explorer.testnet.mantle.xyz/",
         },
       },
     ],
