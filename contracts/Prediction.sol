@@ -16,6 +16,7 @@ contract Prediction is Ownable, Pausable, ReentrancyGuard {
     IERC20 public immutable token; // Prediction token
 
     IPyth public oracle;
+    bytes32 public priceFeedId;
 
     bool public genesisLockOnce = false;
     bool public genesisStartOnce = false;
@@ -32,7 +33,7 @@ contract Prediction is Ownable, Pausable, ReentrancyGuard {
 
     uint256 public currentEpoch; // current epoch for prediction round
 
-    uint256 public oracleLatestRoundId; // converted from uint80 (Chainlink)
+    uint256 public oracleLatestRoundId; // converted from uint80
     uint256 public oracleUpdateAllowance; // seconds
 
     uint256 public constant MAX_TREASURY_FEE = 1000; // 10%
@@ -121,6 +122,7 @@ contract Prediction is Ownable, Pausable, ReentrancyGuard {
      * @notice Constructor
      * @param _token: prediction token
      * @param _oracleAddress: oracle address
+     * @param _priceFeedId: price feed id
      * @param _adminAddress: admin address
      * @param _operatorAddress: operator address
      * @param _intervalSeconds: number of time within an interval
@@ -132,6 +134,7 @@ contract Prediction is Ownable, Pausable, ReentrancyGuard {
     constructor(
         IERC20 _token,
         address _oracleAddress,
+        bytes32 _priceFeedId,
         address _adminAddress,
         address _operatorAddress,
         uint256 _intervalSeconds,
@@ -144,6 +147,7 @@ contract Prediction is Ownable, Pausable, ReentrancyGuard {
 
         token = _token;
         oracle = IPyth(_oracleAddress);
+        priceFeedId = _priceFeedId;
         adminAddress = _adminAddress;
         operatorAddress = _operatorAddress;
         intervalSeconds = _intervalSeconds;
@@ -251,9 +255,9 @@ contract Prediction is Ownable, Pausable, ReentrancyGuard {
             "Can only run after genesisStartRound and genesisLockRound is triggered"
         );
 
-        (uint80 currentRoundId, int256 currentPrice) = _getPriceFromOracle();
+        (uint256 currentRoundId, int256 currentPrice) = _getPriceFromOracle();
 
-        oracleLatestRoundId = uint256(currentRoundId);
+        oracleLatestRoundId = currentRoundId;
 
         // CurrentEpoch refers to previous round (n-1)
         _safeLockRound(currentEpoch, currentRoundId, currentPrice);
@@ -273,9 +277,9 @@ contract Prediction is Ownable, Pausable, ReentrancyGuard {
         require(genesisStartOnce, "Can only run after genesisStartRound is triggered");
         require(!genesisLockOnce, "Can only run genesisLockRound once");
 
-        (uint80 currentRoundId, int256 currentPrice) = _getPriceFromOracle();
+        (uint256 currentRoundId, int256 currentPrice) = _getPriceFromOracle();
 
-        oracleLatestRoundId = uint256(currentRoundId);
+        oracleLatestRoundId = currentRoundId;
 
         _safeLockRound(currentEpoch, currentRoundId, currentPrice);
 
@@ -642,15 +646,19 @@ contract Prediction is Ownable, Pausable, ReentrancyGuard {
      * @notice Get latest recorded price from oracle
      * If it falls below allowed buffer or has not updated, it would be invalid.
      */
-    function _getPriceFromOracle() internal view returns (uint80, int256) {
+    function _getPriceFromOracle() internal view returns (uint256, int256) {
         uint256 leastAllowedTimestamp = block.timestamp + oracleUpdateAllowance;
-        // (uint80 roundId, int256 price, , uint256 timestamp, ) = oracle.getPrice();
-        // require(timestamp <= leastAllowedTimestamp, "Oracle update exceeded max timestamp allowance");
-        // require(
-        //     uint256(roundId) > oracleLatestRoundId,
-        //     "Oracle update roundId must be larger than oracleLatestRoundId"
-        // );
-        // return (roundId, price);
+        PythStructs.Price memory structPrice = oracle.getPrice(priceFeedId);
+        int256 price = int64(structPrice.price);
+        uint256 timestamp = structPrice.publishTime;
+        uint256 roundId = oracleLatestRoundId + 1;
+        // (uint80 roundId, int256 price, , uint256 timestamp, ) = oracle.getLatestPrice();
+        require(timestamp <= leastAllowedTimestamp, "Oracle update exceeded max timestamp allowance");
+        require(
+            roundId > oracleLatestRoundId,
+            "Oracle update roundId must be larger than oracleLatestRoundId"
+        );
+        return (roundId, price);
     }
 
     /**
