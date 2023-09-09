@@ -77,16 +77,16 @@ const config: HardhatUserConfig = {
         network: "mantleMainnet",
         chainId: 5000,
         urls: {
-          apiURL: `${process.env.MANTLE_MAINNET_URL}api`,
-          browserURL: process.env.MANTLE_MAINNET_URL!,
+          apiURL: "https://explorer.mantle.xyz/api",
+          browserURL: "https://explorer.mantle.xyz/",
         },
       },
       {
         network: "mantleTestnet",
         chainId: 5001,
         urls: {
-          apiURL: `${process.env.MANTLE_TESTNET_URL}api`,
-          browserURL: process.env.MANTLE_TESTNET_URL!,
+          apiURL: "https://explorer.testnet.mantle.xyz/api",
+          browserURL: "https://explorer.testnet.mantle.xyz/",
         },
       },
     ],
