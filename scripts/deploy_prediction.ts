@@ -7,8 +7,8 @@ async function main() {
   const oracleAddress = "0xA2aa501b19aff244D90cc15a4Cf739D2725B5729";
   const priceFeedId =
     "0xca80ba6dc32e08d06f1aa886011eed1d77c77be9eb761cc10d72b7d0a2fd57a6";
-  const adminAddress = "0x1D1A00AC9d21e730238442a2a4a68ca787Ec4bBF";
-  const operatorAddress = "0xC37fd327a09A3eC0df4885c366474C5E46119Cd0";
+  const adminAddress = "0x23bC2c3146080B4b0A40c6B5fFb18Da03Ef6baEd";
+  const operatorAddress = "0xcd43a038522Cd67D481130eF1fa8500d429186B6";
   const intervalSeconds = 300;
   const bufferSeconds = 30;
   const minBetAmount = 1000000000000000;
