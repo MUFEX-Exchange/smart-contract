@@ -20,5 +20,6 @@
     "implementation": "0xc5cAB3a14f76FB1147207CE94aF333edE02DDCeB"
   },
   "Prediction(BTC/USD)": "0x19b391e71Da176274cd4B1ba725616f50d1fe4EC",
-  "Prediction(ETH/USD)": "0xAF353eaeD82a2cA928Eb5bf4DCbb76AFe5a5D335"
+  "Prediction(ETH/USD)": "0xAF353eaeD82a2cA928Eb5bf4DCbb76AFe5a5D335",
+  "GameReporter": "0x09c99409759A2EB84281f6837dE77bDd05ba5df9"
 }
